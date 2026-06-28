@@ -24,8 +24,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final isDark = context.isDark;
+
     return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
       body: SafeArea(
         child: Column(
           children: [
@@ -42,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: GoogleFonts.sora(
                         fontSize: 32,
                         fontWeight: FontWeight.w800,
-                        color: Colors.white,
+                        color: cs.onSurface,
                         letterSpacing: -0.5,
                       ),
                       textAlign: TextAlign.center,
@@ -52,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: GoogleFonts.sora(
                         fontSize: 32,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.primary,
+                        color: cs.primary,
                         letterSpacing: -0.5,
                       ),
                       textAlign: TextAlign.center,
@@ -107,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Text(
                       'Log in or sign up',
                       style: GoogleFonts.manrope(
-                        color: AppColors.textSecondary,
+                        color: cs.onSurfaceVariant,
                         fontWeight: FontWeight.w500,
                         fontSize: 16,
                       ),
@@ -121,10 +123,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 56,
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           decoration: BoxDecoration(
-                            color: AppColors.surfaceDark,
+                            color: cs.surface,
                             borderRadius: BorderRadius.circular(12),
                             border:
-                                Border.all(color: AppColors.borderDark),
+                                Border.all(color: cs.outlineVariant),
                           ),
                           child: Row(
                             children: [
@@ -134,14 +136,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                 '+91',
                                 style: GoogleFonts.manrope(
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.white,
+                                  color: cs.onSurface,
                                 ),
                               ),
                               Icon(
                                 Icons.expand_more,
                                 size: 18,
                                 color:
-                                    Colors.white.withValues(alpha: 0.4),
+                                    cs.onSurface.withValues(alpha: 0.4),
                               ),
                             ],
                           ),
@@ -159,13 +161,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                 LengthLimitingTextInputFormatter(10),
                               ],
                               style: GoogleFonts.manrope(
-                                color: Colors.white,
+                                color: cs.onSurface,
                                 fontSize: 18,
                               ),
                               decoration: InputDecoration(
                                 hintText: 'Enter Phone Number',
                                 hintStyle: GoogleFonts.manrope(
-                                  color: AppColors.textMuted,
+                                  color: cs.onSurfaceVariant,
                                   fontSize: 16,
                                 ),
                                 contentPadding: const EdgeInsets.symmetric(
@@ -197,7 +199,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Text(
                           'Remember my login for faster sign-in',
                           style: GoogleFonts.manrope(
-                            color: AppColors.textSecondary,
+                            color: cs.onSurfaceVariant,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
@@ -217,8 +219,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           context.push('/otp-verification', extra: phone);
                         },
                         style: FilledButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          foregroundColor: Colors.black,
+                          backgroundColor: cs.primary,
+                          foregroundColor: cs.onPrimary,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -241,14 +243,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         Expanded(
                             child: Divider(
-                                color: AppColors.borderDark, height: 1)),
+                                color: cs.outlineVariant, height: 1)),
                         Padding(
                           padding:
                               const EdgeInsets.symmetric(horizontal: 16),
                           child: Text(
                             'OR',
                             style: GoogleFonts.manrope(
-                              color: AppColors.textMuted,
+                              color: cs.onSurfaceVariant,
                               fontWeight: FontWeight.w700,
                               fontSize: 12,
                               letterSpacing: 2,
@@ -257,7 +259,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         Expanded(
                             child: Divider(
-                                color: AppColors.borderDark, height: 1)),
+                                color: cs.outlineVariant, height: 1)),
                       ],
                     ).animate().fadeIn(delay: 900.ms),
                     const SizedBox(height: 24),
@@ -276,7 +278,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       TextSpan(
                         text: 'By continuing, you agree to our\n',
                         style: GoogleFonts.manrope(
-                          color: AppColors.textMuted,
+                          color: cs.onSurfaceVariant,
                           fontSize: 11,
                         ),
                         children: [
@@ -284,7 +286,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             text: 'Terms of Service',
                             style: GoogleFonts.manrope(
                               decoration: TextDecoration.underline,
-                              color: AppColors.textMuted,
+                              color: cs.onSurfaceVariant,
                             ),
                           ),
                           const TextSpan(text: ' • '),
@@ -292,7 +294,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             text: 'Privacy Policy',
                             style: GoogleFonts.manrope(
                               decoration: TextDecoration.underline,
-                              color: AppColors.textMuted,
+                              color: cs.onSurfaceVariant,
                             ),
                           ),
                         ],
@@ -310,7 +312,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: 128,
                 height: 6,
                 decoration: BoxDecoration(
-                  color: AppColors.borderDark,
+                  color: cs.outlineVariant,
                   borderRadius: BorderRadius.circular(3),
                 ),
               ),
@@ -322,25 +324,26 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _socialButton(BuildContext context, IconData icon, String label) {
+    final cs = Theme.of(context).colorScheme;
     return Container(
       width: 56,
       height: 56,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: AppColors.surfaceDark,
-        border: Border.all(color: AppColors.borderDark),
+        color: cs.surface,
+        border: Border.all(color: cs.outlineVariant),
       ),
       child: IconButton(
         onPressed: () {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('$label Login coming soon!'),
-              backgroundColor: AppColors.surfaceVariantDark,
+              backgroundColor: cs.surfaceContainerHighest,
               behavior: SnackBarBehavior.floating,
             ),
           );
         },
-        icon: Icon(icon, color: AppColors.textSecondary),
+        icon: Icon(icon, color: cs.onSurfaceVariant),
       ),
     );
   }

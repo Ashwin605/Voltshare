@@ -20,12 +20,14 @@ class MetricCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.surfaceDark,
+        color: cs.surfaceContainer,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.borderDark),
+        border: Border.all(color: cs.outlineVariant),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,7 +43,7 @@ class MetricCard extends StatelessWidget {
                   label,
                   style: GoogleFonts.jetBrainsMono(
                     fontSize: 9,
-                    color: AppColors.textSecondary,
+                    color: cs.onSurfaceVariant,
                     letterSpacing: 1,
                   ),
                 ),
@@ -54,7 +56,7 @@ class MetricCard extends StatelessWidget {
             style: GoogleFonts.sora(
               fontSize: 22,
               fontWeight: FontWeight.w800,
-              color: Colors.white,
+              color: cs.onSurface,
             ),
           ),
           if (subtitle != null) ...[
@@ -63,7 +65,7 @@ class MetricCard extends StatelessWidget {
               subtitle!,
               style: GoogleFonts.manrope(
                 fontSize: 11,
-                color: AppColors.textMuted,
+                color: cs.onSurfaceVariant,
               ),
             ),
           ],
@@ -85,13 +87,15 @@ class InsightsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
             AppColors.primary.withValues(alpha: 0.12),
-            AppColors.surfaceDark,
+            cs.surfaceContainer,
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -130,7 +134,7 @@ class InsightsCard extends StatelessWidget {
                   style: GoogleFonts.manrope(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                    color: cs.onSurface,
                     height: 1.45,
                   ),
                 ),
@@ -140,7 +144,7 @@ class InsightsCard extends StatelessWidget {
                   child: LinearProgressIndicator(
                     value: (percentageShifted / 100).clamp(0.0, 1.0),
                     minHeight: 4,
-                    backgroundColor: AppColors.borderDark,
+                    backgroundColor: cs.outlineVariant,
                     color: AppColors.primary,
                   ),
                 ),

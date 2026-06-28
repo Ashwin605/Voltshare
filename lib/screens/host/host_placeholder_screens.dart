@@ -7,8 +7,9 @@ class HostChargersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
       body: SafeArea(
         child: Center(
           child: Column(
@@ -18,12 +19,12 @@ class HostChargersScreen extends StatelessWidget {
                 width: 80,
                 height: 80,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
+                  color: cs.primary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.ev_station,
-                  color: AppColors.primary,
+                  color: cs.primary,
                   size: 36,
                 ),
               ),
@@ -33,7 +34,7 @@ class HostChargersScreen extends StatelessWidget {
                 style: GoogleFonts.sora(
                   fontSize: 22,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: cs.onSurface,
                 ),
               ),
               const SizedBox(height: 8),
@@ -41,7 +42,7 @@ class HostChargersScreen extends StatelessWidget {
                 'Manage your charger listings',
                 style: GoogleFonts.manrope(
                   fontSize: 14,
-                  color: AppColors.textSecondary,
+                  color: cs.onSurfaceVariant,
                 ),
               ),
             ],
@@ -57,8 +58,9 @@ class HostEarningsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
       body: SafeArea(
         child: Center(
           child: Column(
@@ -68,12 +70,12 @@ class HostEarningsScreen extends StatelessWidget {
                 width: 80,
                 height: 80,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
+                  color: cs.primary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.attach_money,
-                  color: AppColors.primary,
+                  color: cs.primary,
                   size: 36,
                 ),
               ),
@@ -83,7 +85,7 @@ class HostEarningsScreen extends StatelessWidget {
                 style: GoogleFonts.sora(
                   fontSize: 22,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: cs.onSurface,
                 ),
               ),
               const SizedBox(height: 8),
@@ -91,7 +93,7 @@ class HostEarningsScreen extends StatelessWidget {
                 'Track your revenue and payouts',
                 style: GoogleFonts.manrope(
                   fontSize: 14,
-                  color: AppColors.textSecondary,
+                  color: cs.onSurfaceVariant,
                 ),
               ),
             ],
@@ -107,8 +109,9 @@ class HostSettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
       body: SafeArea(
         child: Center(
           child: Column(
@@ -118,12 +121,12 @@ class HostSettingsScreen extends StatelessWidget {
                 width: 80,
                 height: 80,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
+                  color: cs.primary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.settings,
-                  color: AppColors.primary,
+                  color: cs.primary,
                   size: 36,
                 ),
               ),
@@ -133,7 +136,7 @@ class HostSettingsScreen extends StatelessWidget {
                 style: GoogleFonts.sora(
                   fontSize: 22,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: cs.onSurface,
                 ),
               ),
               const SizedBox(height: 8),
@@ -141,7 +144,7 @@ class HostSettingsScreen extends StatelessWidget {
                 'Manage your host preferences',
                 style: GoogleFonts.manrope(
                   fontSize: 14,
-                  color: AppColors.textSecondary,
+                  color: cs.onSurfaceVariant,
                 ),
               ),
             ],

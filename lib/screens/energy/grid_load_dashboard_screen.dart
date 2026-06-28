@@ -53,12 +53,14 @@ class _GridLoadDashboardScreenState extends State<GridLoadDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
+      backgroundColor: cs.surface,
       body: SafeArea(
         child: RefreshIndicator(
           color: AppColors.primary,
-          backgroundColor: AppColors.surfaceDark,
+          backgroundColor: cs.surfaceContainer,
           onRefresh: () async {
             widget.analytics.clearCache();
             await _load();
@@ -91,6 +93,8 @@ class _GridLoadDashboardScreenState extends State<GridLoadDashboardScreen> {
   }
 
   Widget _buildHeader() {
+    final cs = Theme.of(context).colorScheme;
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
       child: Column(
@@ -101,7 +105,7 @@ class _GridLoadDashboardScreenState extends State<GridLoadDashboardScreen> {
             style: GoogleFonts.sora(
               fontSize: 32,
               fontWeight: FontWeight.w800,
-              color: Colors.white,
+              color: cs.onSurface,
             ),
           ),
           const SizedBox(height: 4),
@@ -109,7 +113,7 @@ class _GridLoadDashboardScreenState extends State<GridLoadDashboardScreen> {
             'How P2P charging shifts demand off peak hours',
             style: GoogleFonts.manrope(
               fontSize: 14,
-              color: AppColors.textSecondary,
+              color: cs.onSurfaceVariant,
             ),
           ),
         ],
@@ -118,14 +122,16 @@ class _GridLoadDashboardScreenState extends State<GridLoadDashboardScreen> {
   }
 
   Widget _buildViewSelector() {
+    final cs = Theme.of(context).colorScheme;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Container(
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
-          color: AppColors.surfaceDark,
+          color: cs.surfaceContainer,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.borderDark),
+          border: Border.all(color: cs.outlineVariant),
         ),
         child: Row(
           children: GridLoadView.values.map((view) {
@@ -149,7 +155,7 @@ class _GridLoadDashboardScreenState extends State<GridLoadDashboardScreen> {
                     style: GoogleFonts.manrope(
                       fontSize: 13,
                       fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                      color: selected ? AppColors.primary : AppColors.textSecondary,
+                      color: selected ? AppColors.primary : cs.onSurfaceVariant,
                     ),
                   ),
                 ),
@@ -162,6 +168,8 @@ class _GridLoadDashboardScreenState extends State<GridLoadDashboardScreen> {
   }
 
   Widget _buildContent(GridLoadMetrics metrics) {
+    final cs = Theme.of(context).colorScheme;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
@@ -180,22 +188,22 @@ class _GridLoadDashboardScreenState extends State<GridLoadDashboardScreen> {
             'LOAD DISTRIBUTION',
             style: GoogleFonts.jetBrainsMono(
               fontSize: 10,
-              color: AppColors.textSecondary,
+              color: cs.onSurfaceVariant,
               letterSpacing: 2,
             ),
           ),
           const SizedBox(height: 4),
           Text(
             _chartSubtitle(metrics),
-            style: GoogleFonts.manrope(fontSize: 12, color: AppColors.textMuted),
+            style: GoogleFonts.manrope(fontSize: 12, color: cs.onSurfaceVariant),
           ),
           const SizedBox(height: 16),
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: AppColors.surfaceDark,
+              color: cs.surfaceContainer,
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppColors.borderDark),
+              border: Border.all(color: cs.outlineVariant),
             ),
             child: GridLoadChart(metrics: metrics),
           ),
@@ -207,13 +215,14 @@ class _GridLoadDashboardScreenState extends State<GridLoadDashboardScreen> {
   }
 
   Widget _buildDateRange(GridLoadMetrics metrics) {
+    final cs = Theme.of(context).colorScheme;
     final fmt = DateFormat('MMM d');
     final range = '${fmt.format(metrics.rangeStart)} – ${fmt.format(metrics.rangeEnd.subtract(const Duration(days: 1)))}';
     return Text(
       range,
       style: GoogleFonts.jetBrainsMono(
         fontSize: 11,
-        color: AppColors.textMuted,
+        color: cs.onSurfaceVariant,
       ),
     );
   }
@@ -269,20 +278,22 @@ class _GridLoadDashboardScreenState extends State<GridLoadDashboardScreen> {
   }
 
   Widget _buildSourceBadge(GridLoadMetrics metrics) {
+    final cs = Theme.of(context).colorScheme;
     final isDemo = metrics.source == 'demo';
+
     return Center(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: AppColors.surfaceVariantDark,
+          color: cs.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(100),
-          border: Border.all(color: AppColors.borderDark),
+          border: Border.all(color: cs.outlineVariant),
         ),
         child: Text(
           isDemo ? 'Demo data — connect Firestore for live metrics' : 'Live Firestore data',
           style: GoogleFonts.jetBrainsMono(
             fontSize: 9,
-            color: AppColors.textMuted,
+            color: cs.onSurfaceVariant,
           ),
         ),
       ),
@@ -290,23 +301,25 @@ class _GridLoadDashboardScreenState extends State<GridLoadDashboardScreen> {
   }
 
   Widget _buildError() {
+    final cs = Theme.of(context).colorScheme;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.cloud_off, color: AppColors.textMuted, size: 48),
+            Icon(Icons.cloud_off, color: cs.onSurfaceVariant, size: 48),
             const SizedBox(height: 16),
             Text(
               'Failed to load grid data',
-              style: GoogleFonts.manrope(color: Colors.white, fontWeight: FontWeight.w600),
+              style: GoogleFonts.manrope(color: cs.onSurface, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
             Text(
               _error ?? '',
               textAlign: TextAlign.center,
-              style: GoogleFonts.manrope(color: AppColors.textSecondary, fontSize: 12),
+              style: GoogleFonts.manrope(color: cs.onSurfaceVariant, fontSize: 12),
             ),
             const SizedBox(height: 20),
             FilledButton(

@@ -28,24 +28,25 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: cs.onSurface),
           onPressed: () => context.pop(),
         ),
         title: Text('Notifications', style: GoogleFonts.sora(
-          fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white,
+          fontSize: 20, fontWeight: FontWeight.bold, color: cs.onSurface,
         )),
         centerTitle: true,
         actions: [
           TextButton(
             onPressed: _markAllRead,
             child: Text('Mark all read', style: GoogleFonts.plusJakartaSans(
-              color: AppColors.primary, fontWeight: FontWeight.bold,
+              color: cs.primary, fontWeight: FontWeight.bold,
             )),
           ),
         ],
@@ -59,9 +60,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             margin: const EdgeInsets.only(bottom: 16),
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: notif['isUnread'] == true ? AppColors.primary.withValues(alpha: 0.1) : const Color(0xFF131313),
+              color: notif['isUnread'] == true ? cs.primary.withValues(alpha: 0.1) : cs.surfaceContainer,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: notif['isUnread'] == true ? AppColors.primary.withValues(alpha: 0.3) : AppColors.borderDark),
+              border: Border.all(color: notif['isUnread'] == true ? cs.primary.withValues(alpha: 0.3) : cs.outlineVariant),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,10 +70,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: AppColors.surfaceVariantDark,
+                    color: cs.surfaceContainerHighest,
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(notif['icon'] as IconData, color: Colors.white, size: 24),
+                  child: Icon(notif['icon'] as IconData, color: cs.onSurface, size: 24),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -83,13 +84,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(notif['title'] as String, style: GoogleFonts.manrope(
-                            fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white,
+                            fontSize: 16, fontWeight: FontWeight.bold, color: cs.onSurface,
                           )),
                           if (notif['isUnread'] == true)
                             Container(
                               width: 8, height: 8,
-                              decoration: const BoxDecoration(
-                                color: AppColors.primary,
+                              decoration: BoxDecoration(
+                                color: cs.primary,
                                 shape: BoxShape.circle,
                               ),
                             ),
@@ -97,11 +98,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       ),
                       const SizedBox(height: 6),
                       Text(notif['desc'] as String, style: GoogleFonts.plusJakartaSans(
-                        fontSize: 14, color: AppColors.textSecondary,
+                        fontSize: 14, color: cs.onSurfaceVariant,
                       )),
                       const SizedBox(height: 10),
                       Text(notif['time'] as String, style: GoogleFonts.plusJakartaSans(
-                        fontSize: 12, color: AppColors.textMuted,
+                        fontSize: 12, color: cs.onSurfaceVariant.withValues(alpha: 0.7),
                       )),
                     ],
                   ),

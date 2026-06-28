@@ -44,19 +44,19 @@ class _NotificationPreferencesScreenState extends State<NotificationPreferencesS
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     if (_loading) {
-      return const Scaffold(
-        backgroundColor: AppColors.backgroundDark,
-        body: Center(child: CircularProgressIndicator(color: AppColors.primary)),
+      return Scaffold(
+        body: Center(child: CircularProgressIndicator(color: cs.primary)),
       );
     }
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
       appBar: AppBar(
         leading: IconButton(
           onPressed: () => context.pop(),
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: cs.onSurface),
         ),
         title: Text(
           'Notification Preferences',
@@ -113,11 +113,12 @@ class _NotificationPreferencesScreenState extends State<NotificationPreferencesS
   }
 
   Widget _buildSectionTitle(String title) {
+    final cs = Theme.of(context).colorScheme;
     return Text(
       title.toUpperCase(),
       style: GoogleFonts.jetBrainsMono(
         fontSize: 11,
-        color: AppColors.primary,
+        color: cs.primary,
         letterSpacing: 1.5,
         fontWeight: FontWeight.w600,
       ),
@@ -130,13 +131,16 @@ class _NotificationPreferencesScreenState extends State<NotificationPreferencesS
     required bool value,
     required ValueChanged<bool> onChanged,
   }) {
+    final cs = Theme.of(context).colorScheme;
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.surfaceDark,
+        color: cs.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.borderDark),
+        border: Border.all(color: cs.outlineVariant),
       ),
       child: Row(
         children: [
@@ -149,7 +153,7 @@ class _NotificationPreferencesScreenState extends State<NotificationPreferencesS
                   style: GoogleFonts.manrope(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                    color: cs.onSurface,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -157,7 +161,7 @@ class _NotificationPreferencesScreenState extends State<NotificationPreferencesS
                   subtitle,
                   style: GoogleFonts.manrope(
                     fontSize: 13,
-                    color: AppColors.textSecondary,
+                    color: cs.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -169,8 +173,8 @@ class _NotificationPreferencesScreenState extends State<NotificationPreferencesS
             onChanged: onChanged,
             activeColor: AppColors.primary,
             activeTrackColor: AppColors.primary.withValues(alpha: 0.3),
-            inactiveThumbColor: AppColors.textSecondary,
-            inactiveTrackColor: AppColors.backgroundDark,
+            inactiveThumbColor: cs.onSurfaceVariant,
+            inactiveTrackColor: bgColor,
           ),
         ],
       ),

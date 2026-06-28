@@ -2,12 +2,16 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:vnest_app/core/router/app_router.dart';
 import 'package:vnest_app/core/theme/app_theme.dart';
+import 'package:vnest_app/core/theme/theme_notifier.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:vnest_app/core/services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Load saved theme preference.
+  await ThemeNotifier().load();
 
   // Firebase & notifications may fail on web or without proper config.
   // Don't let that block the UI from rendering.
@@ -31,13 +35,19 @@ class VNestApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'VoltNest',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.darkTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.dark,
-      routerConfig: AppRouter.router,
+    return ListenableBuilder(
+      listenable: ThemeNotifier(),
+      builder: (context, _) {
+        return MaterialApp.router(
+          title: 'VoltNest',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: ThemeNotifier().themeMode,
+          routerConfig: AppRouter.router,
+        );
+      },
     );
   }
 }
+

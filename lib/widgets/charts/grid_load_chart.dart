@@ -16,13 +16,15 @@ class GridLoadChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     if (metrics.buckets.isEmpty) {
       return SizedBox(
         height: height,
         child: Center(
           child: Text(
             'No session data for this period',
-            style: GoogleFonts.manrope(color: AppColors.textSecondary),
+            style: GoogleFonts.manrope(color: cs.onSurfaceVariant),
           ),
         ),
       );
@@ -31,27 +33,28 @@ class GridLoadChart extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildLegend(),
+        _buildLegend(context),
         const SizedBox(height: 16),
         SizedBox(
           height: height,
-          child: LineChart(_buildChartData()),
+          child: LineChart(_buildChartData(context)),
         ),
       ],
     );
   }
 
-  Widget _buildLegend() {
+  Widget _buildLegend(BuildContext context) {
     return Row(
       children: [
-        _legendDot(AppColors.primary, 'VoltNest Sessions'),
+        _legendDot(context, AppColors.primary, 'VoltNest Sessions'),
         const SizedBox(width: 20),
-        _legendDot(AppColors.warning, 'Traditional Baseline'),
+        _legendDot(context, AppColors.warning, 'Traditional Baseline'),
       ],
     );
   }
 
-  Widget _legendDot(Color color, String label) {
+  Widget _legendDot(BuildContext context, Color color, String label) {
+    final cs = Theme.of(context).colorScheme;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -65,14 +68,15 @@ class GridLoadChart extends StatelessWidget {
           label,
           style: GoogleFonts.jetBrainsMono(
             fontSize: 10,
-            color: AppColors.textSecondary,
+            color: cs.onSurfaceVariant,
           ),
         ),
       ],
     );
   }
 
-  LineChartData _buildChartData() {
+  LineChartData _buildChartData(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final maxY = metrics.maxBucketValue.toDouble() * 1.2;
 
     return LineChartData(
@@ -83,7 +87,7 @@ class GridLoadChart extends StatelessWidget {
         drawVerticalLine: false,
         horizontalInterval: maxY / 4,
         getDrawingHorizontalLine: (value) => FlLine(
-          color: AppColors.borderDark,
+          color: cs.outlineVariant,
           strokeWidth: 1,
         ),
       ),
@@ -100,7 +104,7 @@ class GridLoadChart extends StatelessWidget {
               value.toInt().toString(),
               style: GoogleFonts.jetBrainsMono(
                 fontSize: 9,
-                color: AppColors.textMuted,
+                color: cs.onSurfaceVariant,
               ),
             ),
           ),
@@ -121,7 +125,7 @@ class GridLoadChart extends StatelessWidget {
                   metrics.buckets[index].label,
                   style: GoogleFonts.jetBrainsMono(
                     fontSize: 9,
-                    color: AppColors.textMuted,
+                    color: cs.onSurfaceVariant,
                   ),
                 ),
               );
@@ -150,7 +154,7 @@ class GridLoadChart extends StatelessWidget {
       ],
       lineTouchData: LineTouchData(
         touchTooltipData: LineTouchTooltipData(
-          getTooltipColor: (_) => AppColors.surfaceVariantDark,
+          getTooltipColor: (_) => cs.surfaceContainerHighest,
           getTooltipItems: (touchedSpots) => touchedSpots.map((spot) {
             final isActual = spot.barIndex == 0;
             return LineTooltipItem(

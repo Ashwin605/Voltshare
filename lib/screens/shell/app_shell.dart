@@ -34,18 +34,21 @@ class _AppShellState extends State<AppShell> {
       _currentIndex = 0;
     }
 
+    final cs = Theme.of(context).colorScheme;
+    final isDark = context.isDark;
+
     return Scaffold(
       body: widget.child,
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: AppColors.cardDark,
+          color: cs.surfaceContainer,
           border: Border(
-            top: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
+            top: BorderSide(color: cs.outlineVariant.withValues(alpha: isDark ? 0.05 : 0.3)),
           ),
           borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.3),
+              color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
               blurRadius: 20,
               offset: const Offset(0, -4),
             ),
@@ -54,32 +57,32 @@ class _AppShellState extends State<AppShell> {
         child: ClipRRect(
           borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
           child: NavigationBar(
-            backgroundColor: AppColors.cardDark,
+            backgroundColor: cs.surfaceContainer,
             surfaceTintColor: Colors.transparent,
-            indicatorColor: AppColors.primary.withValues(alpha: 0.1),
+            indicatorColor: cs.primary.withValues(alpha: 0.1),
             selectedIndex: _currentIndex,
             onDestinationSelected: _onTap,
             height: 72,
             labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-            destinations: const [
+            destinations: [
               NavigationDestination(
-                icon: Icon(Icons.home_outlined, color: AppColors.textMuted),
-                selectedIcon: Icon(Icons.home, color: AppColors.primary),
+                icon: Icon(Icons.home_outlined, color: cs.onSurfaceVariant),
+                selectedIcon: Icon(Icons.home, color: cs.primary),
                 label: 'Home',
               ),
               NavigationDestination(
-                icon: Icon(Icons.route_outlined, color: AppColors.textMuted),
-                selectedIcon: Icon(Icons.route, color: AppColors.primary),
+                icon: Icon(Icons.route_outlined, color: cs.onSurfaceVariant),
+                selectedIcon: Icon(Icons.route, color: cs.primary),
                 label: 'Trips',
               ),
               NavigationDestination(
-                icon: Icon(Icons.bolt_outlined, color: AppColors.textMuted),
-                selectedIcon: Icon(Icons.bolt, color: AppColors.primary),
+                icon: Icon(Icons.bolt_outlined, color: cs.onSurfaceVariant),
+                selectedIcon: Icon(Icons.bolt, color: cs.primary),
                 label: 'Energy',
               ),
               NavigationDestination(
-                icon: Icon(Icons.person_outline, color: AppColors.textMuted),
-                selectedIcon: Icon(Icons.person, color: AppColors.primary),
+                icon: Icon(Icons.person_outline, color: cs.onSurfaceVariant),
+                selectedIcon: Icon(Icons.person, color: cs.primary),
                 label: 'Profile',
               ),
             ],

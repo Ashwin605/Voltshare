@@ -18,17 +18,18 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: cs.onSurface),
           onPressed: () => context.pop(),
         ),
         title: Text('Privacy', style: GoogleFonts.sora(
-          fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white,
+          fontSize: 20, fontWeight: FontWeight.bold, color: cs.onSurface,
         )),
         centerTitle: true,
       ),
@@ -38,7 +39,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Privacy Settings', style: GoogleFonts.manrope(
-              fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white,
+              fontSize: 18, fontWeight: FontWeight.bold, color: cs.onSurface,
             )).animate().fadeIn(),
             const SizedBox(height: 16),
             _buildToggleItem(
@@ -64,7 +65,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
             ),
             const SizedBox(height: 32),
             Text('Legal', style: GoogleFonts.manrope(
-              fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white,
+              fontSize: 18, fontWeight: FontWeight.bold, color: cs.onSurface,
             )).animate().fadeIn(delay: 400.ms),
             const SizedBox(height: 16),
             _buildLinkItem(context, 'Privacy Policy', 3, '/privacy-policy'),
@@ -83,13 +84,15 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
     required ValueChanged<bool> onChanged,
     required int index,
   }) {
+    final cs = Theme.of(context).colorScheme;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF131313),
+        color: cs.surfaceContainer,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.borderDark),
+        border: Border.all(color: cs.outlineVariant),
       ),
       child: Row(
         children: [
@@ -98,11 +101,11 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title, style: GoogleFonts.manrope(
-                  fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white,
+                  fontSize: 16, fontWeight: FontWeight.bold, color: cs.onSurface,
                 )),
                 const SizedBox(height: 4),
                 Text(desc, style: GoogleFonts.plusJakartaSans(
-                  fontSize: 14, color: AppColors.textSecondary,
+                  fontSize: 14, color: cs.onSurfaceVariant,
                 )),
               ],
             ),
@@ -111,10 +114,10 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeThumbColor: Colors.black,
-            activeTrackColor: AppColors.primary,
-            inactiveThumbColor: AppColors.textSecondary,
-            inactiveTrackColor: AppColors.surfaceVariantDark,
+            activeThumbColor: cs.onPrimary,
+            activeTrackColor: cs.primary,
+            inactiveThumbColor: cs.onSurfaceVariant,
+            inactiveTrackColor: cs.surfaceContainerHighest,
           ),
         ],
       ),
@@ -122,10 +125,12 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
   }
 
   Widget _buildLinkItem(BuildContext context, String title, int index, String? route, {bool isDestructive = false}) {
+    final cs = Theme.of(context).colorScheme;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       child: Material(
-        color: const Color(0xFF131313),
+        color: cs.surfaceContainer,
         borderRadius: BorderRadius.circular(16),
         child: InkWell(
           onTap: () {
@@ -137,7 +142,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
           child: Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              border: Border.all(color: isDestructive ? Colors.red.withValues(alpha: 0.3) : AppColors.borderDark),
+              border: Border.all(color: isDestructive ? Colors.red.withValues(alpha: 0.3) : cs.outlineVariant),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Row(
@@ -146,9 +151,9 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                 Text(title, style: GoogleFonts.manrope(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: isDestructive ? Colors.redAccent : Colors.white,
+                  color: isDestructive ? Colors.redAccent : cs.onSurface,
                 )),
-                Icon(Icons.chevron_right, color: isDestructive ? Colors.redAccent : AppColors.textSecondary),
+                Icon(Icons.chevron_right, color: isDestructive ? Colors.redAccent : cs.onSurfaceVariant),
               ],
             ),
           ),
@@ -157,7 +162,3 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
     ).animate().fadeIn(delay: (100 + index * 100).ms).slideX(begin: 0.1);
   }
 }
-
-
-
-

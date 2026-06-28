@@ -5,6 +5,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vnest_app/core/services/ocpp_service.dart';
+import 'package:vnest_app/core/theme/app_theme.dart';
 
 class ActiveSessionScreen extends StatefulWidget {
   const ActiveSessionScreen({super.key});
@@ -76,8 +77,10 @@ class _ActiveSessionScreenState extends State<ActiveSessionScreen>
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: const Color(0xFF131313),
+      backgroundColor: cs.surface,
       body: SafeArea(
         child: Column(
           children: [
@@ -89,7 +92,7 @@ class _ActiveSessionScreenState extends State<ActiveSessionScreen>
                 children: [
                   IconButton(
                     onPressed: () {},
-                    icon: const Icon(Icons.bolt, color: Color(0xFF00E676)),
+                    icon: const Icon(Icons.bolt, color: AppColors.primary),
                   ),
                   IconButton(
                     onPressed: () => context.go('/profile'),
@@ -97,10 +100,10 @@ class _ActiveSessionScreenState extends State<ActiveSessionScreen>
                       width: 32, height: 32,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: const Color(0xFF1E1E1E),
-                        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                        color: cs.surfaceContainer,
+                        border: Border.all(color: cs.onSurface.withValues(alpha: 0.1)),
                       ),
-                      child: const Icon(Icons.person, color: Colors.white, size: 18),
+                      child: Icon(Icons.person, color: cs.onSurface, size: 18),
                     ),
                   ),
                 ],
@@ -115,9 +118,9 @@ class _ActiveSessionScreenState extends State<ActiveSessionScreen>
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF1E1E1E),
+                        color: cs.surfaceContainer,
                         borderRadius: BorderRadius.circular(100),
-                        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+                        border: Border.all(color: cs.onSurface.withValues(alpha: 0.05)),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -126,32 +129,32 @@ class _ActiveSessionScreenState extends State<ActiveSessionScreen>
                             width: 10, height: 10,
                             decoration: const BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Color(0xFF00E676),
+                              color: AppColors.primary,
                             ),
                           ).animate(onPlay: (c) => c.repeat()).fadeIn().then().fadeOut().then().fadeIn(),
                           const SizedBox(width: 8),
                           Text(_statusText, style: GoogleFonts.plusJakartaSans(
-                            fontSize: 12, fontWeight: FontWeight.w700, color: const Color(0xFF00E676),
+                            fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.primary,
                           )),
                         ],
                       ),
                     ).animate().fadeIn().slideY(begin: -0.2),
                     const SizedBox(height: 8),
                     Text('Station #BLR-42A', style: GoogleFonts.manrope(
-                      fontSize: 24, fontWeight: FontWeight.w700, color: Colors.white,
+                      fontSize: 24, fontWeight: FontWeight.w700, color: cs.onSurface,
                     )).animate().fadeIn(delay: 200.ms),
                     const SizedBox(height: 32),
                     // Progress ring
-                    _buildProgressRing(),
+                    _buildProgressRing(context),
                     const SizedBox(height: 32),
                     // Stats grid
-                    _buildStatsGrid(),
+                    _buildStatsGrid(context),
                     const SizedBox(height: 16),
                     // Charging curve
-                    _buildChargingCurve(),
+                    _buildChargingCurve(context),
                     const SizedBox(height: 24),
                     // Action buttons
-                    _buildActions(),
+                    _buildActions(context),
                   ],
                 ),
               ),
@@ -162,7 +165,9 @@ class _ActiveSessionScreenState extends State<ActiveSessionScreen>
     );
   }
 
-  Widget _buildProgressRing() {
+  Widget _buildProgressRing(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return SizedBox(
       width: 256, height: 256,
       child: Stack(
@@ -175,7 +180,7 @@ class _ActiveSessionScreenState extends State<ActiveSessionScreen>
               return Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: const Color(0xFF00E676).withValues(
+                  color: AppColors.primary.withValues(
                     alpha: 0.1 + sin(_pulseController.value * pi * 2) * 0.05,
                   ),
                 ),
@@ -185,18 +190,18 @@ class _ActiveSessionScreenState extends State<ActiveSessionScreen>
           // SVG-like progress ring
           CustomPaint(
             size: const Size(256, 256),
-            painter: _ProgressRingPainter(progress: _progress),
+            painter: _ProgressRingPainter(progress: _progress, trackColor: cs.surfaceContainerHighest),
           ),
           // Inner content
           Container(
             width: 192, height: 192,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFF131313),
-              border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+              color: cs.surface,
+              border: Border.all(color: cs.onSurface.withValues(alpha: 0.1)),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF00E676).withValues(alpha: 0.15),
+                  color: AppColors.primary.withValues(alpha: 0.15),
                   blurRadius: 40,
                 ),
               ],
@@ -210,21 +215,21 @@ class _ActiveSessionScreenState extends State<ActiveSessionScreen>
                       text: _kwhDelivered.toStringAsFixed(1),
                       style: GoogleFonts.manrope(
                         fontSize: 36, fontWeight: FontWeight.w800,
-                        color: Colors.white, letterSpacing: -1,
+                        color: cs.onSurface, letterSpacing: -1,
                       ),
                     ),
                     TextSpan(
                       text: 'kWh',
                       style: GoogleFonts.manrope(
                         fontSize: 18, fontWeight: FontWeight.w600,
-                        color: Colors.grey,
+                        color: cs.onSurfaceVariant,
                       ),
                     ),
                   ]),
                 ),
                 Text('DELIVERED', style: GoogleFonts.plusJakartaSans(
                   fontSize: 10, fontWeight: FontWeight.w700,
-                  color: const Color(0xFF00E676), letterSpacing: 2,
+                  color: AppColors.primary, letterSpacing: 2,
                 )),
               ],
             ),
@@ -234,12 +239,13 @@ class _ActiveSessionScreenState extends State<ActiveSessionScreen>
     ).animate().scale(begin: const Offset(0.8, 0.8), duration: 600.ms, curve: Curves.easeOutBack);
   }
 
-  Widget _buildStatsGrid() {
+  Widget _buildStatsGrid(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final stats = [
-      {'icon': Icons.payments, 'color': Colors.blue.shade300, 'value': '₹${_cost.toStringAsFixed(0)}', 'label': 'Cost so far'},
-      {'icon': Icons.schedule, 'color': Colors.orange.shade300, 'value': _formattedDuration, 'label': 'Duration'},
-      {'icon': Icons.bolt, 'color': const Color(0xFF00E676), 'value': '${_powerKw.toStringAsFixed(1)} kW', 'label': 'Current Power'},
-      {'icon': Icons.electric_meter, 'color': Colors.purple.shade300, 'value': '${_voltage.toStringAsFixed(1)} V', 'label': 'Voltage'},
+      {'icon': Icons.payments, 'color': Colors.blue, 'value': '₹${_cost.toStringAsFixed(0)}', 'label': 'Cost so far'},
+      {'icon': Icons.schedule, 'color': Colors.orange, 'value': _formattedDuration, 'label': 'Duration'},
+      {'icon': Icons.bolt, 'color': AppColors.primary, 'value': '${_powerKw.toStringAsFixed(1)} kW', 'label': 'Current Power'},
+      {'icon': Icons.electric_meter, 'color': Colors.purple, 'value': '${_voltage.toStringAsFixed(1)} V', 'label': 'Voltage'},
     ];
 
     return GridView.count(
@@ -254,9 +260,9 @@ class _ActiveSessionScreenState extends State<ActiveSessionScreen>
         return Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: const Color(0xFF1E1E1E),
+            color: cs.surfaceContainer,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+            border: Border.all(color: cs.onSurface.withValues(alpha: 0.05)),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -264,10 +270,10 @@ class _ActiveSessionScreenState extends State<ActiveSessionScreen>
               Icon(stat['icon'] as IconData, color: stat['color'] as Color, size: 24),
               const SizedBox(height: 8),
               Text(stat['value'] as String, style: GoogleFonts.manrope(
-                fontSize: 22, fontWeight: FontWeight.w700, color: Colors.white,
+                fontSize: 22, fontWeight: FontWeight.w700, color: cs.onSurface,
               )),
               Text(stat['label'] as String, style: GoogleFonts.plusJakartaSans(
-                fontSize: 10, fontWeight: FontWeight.w700, color: Colors.grey,
+                fontSize: 10, fontWeight: FontWeight.w700, color: cs.onSurfaceVariant,
               )),
             ],
           ),
@@ -276,14 +282,15 @@ class _ActiveSessionScreenState extends State<ActiveSessionScreen>
     );
   }
 
-  Widget _buildChargingCurve() {
+  Widget _buildChargingCurve(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Container(
       height: 128,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E1E1E),
+        color: cs.surfaceContainer,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+        border: Border.all(color: cs.onSurface.withValues(alpha: 0.05)),
       ),
       child: Stack(
         children: [
@@ -291,10 +298,10 @@ class _ActiveSessionScreenState extends State<ActiveSessionScreen>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text('Charging Curve', style: GoogleFonts.plusJakartaSans(
-                fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white,
+                fontSize: 12, fontWeight: FontWeight.w700, color: cs.onSurface,
               )),
               Text('Live', style: GoogleFonts.plusJakartaSans(
-                fontSize: 10, fontWeight: FontWeight.w700, color: const Color(0xFF00E676),
+                fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.primary,
               )),
             ],
           ),
@@ -313,7 +320,8 @@ class _ActiveSessionScreenState extends State<ActiveSessionScreen>
     ).animate().fadeIn(delay: 600.ms);
   }
 
-  Widget _buildActions() {
+  Widget _buildActions(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Column(
       children: [
         SizedBox(
@@ -323,21 +331,21 @@ class _ActiveSessionScreenState extends State<ActiveSessionScreen>
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
-                  backgroundColor: const Color(0xFF1E1E1E),
-                  title: Text('Stop Charging?', style: GoogleFonts.sora(color: Colors.white)),
-                  content: Text('Are you sure you want to stop the charging session?', style: GoogleFonts.plusJakartaSans(color: Colors.grey)),
+                  backgroundColor: cs.surfaceContainer,
+                  title: Text('Stop Charging?', style: GoogleFonts.sora(color: cs.onSurface)),
+                  content: Text('Are you sure you want to stop the charging session?', style: GoogleFonts.plusJakartaSans(color: cs.onSurfaceVariant)),
                   actions: [
                     TextButton(
                       onPressed: () => context.pop(),
-                      child: Text('Cancel', style: TextStyle(color: Colors.white.withValues(alpha: 0.5))),
+                      child: Text('Cancel', style: TextStyle(color: cs.onSurfaceVariant)),
                     ),
                     FilledButton(
                       onPressed: () {
                         context.pop(); // close dialog
                         context.go('/payment-success'); // simulate going to receipt
                       },
-                      style: FilledButton.styleFrom(backgroundColor: Colors.red),
-                      child: const Text('Stop Session'),
+                      style: FilledButton.styleFrom(backgroundColor: AppColors.error),
+                      child: const Text('Stop Session', style: TextStyle(color: Colors.white)),
                     ),
                   ],
                 ),
@@ -348,8 +356,8 @@ class _ActiveSessionScreenState extends State<ActiveSessionScreen>
               fontSize: 14, fontWeight: FontWeight.w600,
             )),
             style: FilledButton.styleFrom(
-              backgroundColor: const Color(0xFF00E676),
-              foregroundColor: const Color(0xFF131313),
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.black,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               elevation: 0,
             ),
@@ -361,9 +369,9 @@ class _ActiveSessionScreenState extends State<ActiveSessionScreen>
           child: OutlinedButton.icon(
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Connecting to Emergency Support...'),
-                  backgroundColor: Color(0xFF1E1E1E),
+                SnackBar(
+                  content: const Text('Connecting to Emergency Support...'),
+                  backgroundColor: cs.surfaceContainerHighest,
                   behavior: SnackBarBehavior.floating,
                 ),
               );
@@ -373,8 +381,8 @@ class _ActiveSessionScreenState extends State<ActiveSessionScreen>
               fontSize: 14, fontWeight: FontWeight.w600,
             )),
             style: OutlinedButton.styleFrom(
-              foregroundColor: Colors.white,
-              side: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
+              foregroundColor: cs.onSurface,
+              side: BorderSide(color: cs.onSurface.withValues(alpha: 0.2)),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
           ),
@@ -386,7 +394,8 @@ class _ActiveSessionScreenState extends State<ActiveSessionScreen>
 
 class _ProgressRingPainter extends CustomPainter {
   final double progress;
-  _ProgressRingPainter({required this.progress});
+  final Color trackColor;
+  _ProgressRingPainter({required this.progress, required this.trackColor});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -395,21 +404,21 @@ class _ProgressRingPainter extends CustomPainter {
 
     // Track
     final trackPaint = Paint()
-      ..color = const Color(0xFF2A2A2A)
+      ..color = trackColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 12;
     canvas.drawCircle(center, radius, trackPaint);
 
     // Progress
     final progressPaint = Paint()
-      ..color = const Color(0xFF00E676)
+      ..color = AppColors.primary
       ..style = PaintingStyle.stroke
       ..strokeWidth = 12
       ..strokeCap = StrokeCap.round;
 
     // Glow
     final glowPaint = Paint()
-      ..color = const Color(0xFF00E676).withValues(alpha: 0.5)
+      ..color = AppColors.primary.withValues(alpha: 0.5)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 12
       ..strokeCap = StrokeCap.round
@@ -428,7 +437,7 @@ class _ProgressRingPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _ProgressRingPainter oldDelegate) =>
-      oldDelegate.progress != progress;
+      oldDelegate.progress != progress || oldDelegate.trackColor != trackColor;
 }
 
 class _ChargingCurvePainter extends CustomPainter {
@@ -439,13 +448,13 @@ class _ChargingCurvePainter extends CustomPainter {
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
-          const Color(0xFF00E676).withValues(alpha: 0.5),
+          AppColors.primary.withValues(alpha: 0.5),
           Colors.transparent,
         ],
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
 
     final linePaint = Paint()
-      ..color = const Color(0xFF00E676).withValues(alpha: 0.8)
+      ..color = AppColors.primary.withValues(alpha: 0.8)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
 

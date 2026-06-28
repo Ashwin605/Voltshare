@@ -28,6 +28,9 @@ class _HostShellState extends State<HostShell> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final isDark = context.isDark;
+
     final location = GoRouterState.of(context).uri.toString();
     if (location.startsWith('/host/settings')) {
       _currentIndex = 3;
@@ -43,14 +46,14 @@ class _HostShellState extends State<HostShell> {
       body: widget.child,
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: AppColors.cardDark,
+          color: cs.surfaceContainer,
           border: Border(
-            top: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
+            top: BorderSide(color: cs.outlineVariant.withValues(alpha: isDark ? 0.05 : 0.3)),
           ),
           borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.3),
+              color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
               blurRadius: 20,
               offset: const Offset(0, -4),
             ),
@@ -59,32 +62,32 @@ class _HostShellState extends State<HostShell> {
         child: ClipRRect(
           borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
           child: NavigationBar(
-            backgroundColor: AppColors.cardDark,
+            backgroundColor: cs.surfaceContainer,
             surfaceTintColor: Colors.transparent,
-            indicatorColor: AppColors.primary.withValues(alpha: 0.1),
+            indicatorColor: cs.primary.withValues(alpha: 0.1),
             selectedIndex: _currentIndex,
             onDestinationSelected: _onTap,
             height: 72,
             labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-            destinations: const [
+            destinations: [
               NavigationDestination(
-                icon: Icon(Icons.dashboard_outlined, color: AppColors.textMuted),
-                selectedIcon: Icon(Icons.dashboard, color: AppColors.primary),
+                icon: Icon(Icons.dashboard_outlined, color: cs.onSurfaceVariant),
+                selectedIcon: Icon(Icons.dashboard, color: cs.primary),
                 label: 'Dashboard',
               ),
               NavigationDestination(
-                icon: Icon(Icons.ev_station_outlined, color: AppColors.textMuted),
-                selectedIcon: Icon(Icons.ev_station, color: AppColors.primary),
+                icon: Icon(Icons.ev_station_outlined, color: cs.onSurfaceVariant),
+                selectedIcon: Icon(Icons.ev_station, color: cs.primary),
                 label: 'Chargers',
               ),
               NavigationDestination(
-                icon: Icon(Icons.attach_money, color: AppColors.textMuted),
-                selectedIcon: Icon(Icons.attach_money, color: AppColors.primary),
+                icon: Icon(Icons.attach_money, color: cs.onSurfaceVariant),
+                selectedIcon: Icon(Icons.attach_money, color: cs.primary),
                 label: 'Earnings',
               ),
               NavigationDestination(
-                icon: Icon(Icons.settings_outlined, color: AppColors.textMuted),
-                selectedIcon: Icon(Icons.settings, color: AppColors.primary),
+                icon: Icon(Icons.settings_outlined, color: cs.onSurfaceVariant),
+                selectedIcon: Icon(Icons.settings, color: cs.primary),
                 label: 'Settings',
               ),
             ],

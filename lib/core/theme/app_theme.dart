@@ -17,8 +17,12 @@ class AppColors {
   static const Color borderHoverDark = Color(0xFF333333);
 
   // Light mode surfaces
-  static const Color backgroundLight = Color(0xFFFAF8FF);
-  static const Color surfaceLight = Color(0xFFFAF8FF);
+  static const Color backgroundLight = Color(0xFFF6F7FB);
+  static const Color surfaceLight = Color(0xFFFFFFFF);
+  static const Color surfaceVariantLight = Color(0xFFF0F1F5);
+  static const Color cardLight = Color(0xFFFFFFFF);
+  static const Color borderLight = Color(0xFFE2E4EA);
+  static const Color borderHoverLight = Color(0xFFCBCED6);
   static const Color surfaceContainerLight = Color(0xFFEAEDFF);
   static const Color surfaceContainerLowLight = Color(0xFFF2F3FF);
 
@@ -28,6 +32,9 @@ class AppColors {
   static const Color textMuted = Color(0xFF71717A);
   static const Color textDarkPrimary = Color(0xFF131B2E);
   static const Color textDarkSecondary = Color(0xFF3D4A3D);
+  static const Color textLightPrimary = Color(0xFF1A1A2E);
+  static const Color textLightSecondary = Color(0xFF6B7280);
+  static const Color textLightMuted = Color(0xFF9CA3AF);
 
   // Accent colors
   static const Color warning = Color(0xFFFF8E4D);
@@ -58,6 +65,8 @@ class AppTheme {
           secondary: AppColors.secondary,
           secondaryContainer: AppColors.secondaryContainer,
           surface: AppColors.surfaceDark,
+          surfaceContainerHighest: AppColors.surfaceVariantDark,
+          surfaceContainer: AppColors.cardDark,
           error: AppColors.error,
           errorContainer: AppColors.errorContainer,
           outline: AppColors.outline,
@@ -132,6 +141,10 @@ class AppTheme {
           secondary: AppColors.secondary,
           secondaryContainer: AppColors.secondaryContainer,
           surface: AppColors.surfaceLight,
+          surfaceContainerHighest: AppColors.surfaceVariantLight,
+          surfaceContainer: AppColors.cardLight,
+          onSurface: AppColors.textLightPrimary,
+          onSurfaceVariant: AppColors.textLightSecondary,
           error: AppColors.error,
           errorContainer: AppColors.errorContainer,
           outline: AppColors.outline,
@@ -142,6 +155,56 @@ class AppTheme {
           backgroundColor: Colors.transparent,
           elevation: 0,
           scrolledUnderElevation: 0,
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primaryDark,
+            foregroundColor: Colors.white,
+            elevation: 0,
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            textStyle: GoogleFonts.manrope(
+              fontWeight: FontWeight.w700,
+              fontSize: 16,
+            ),
+          ),
+        ),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+            foregroundColor: AppColors.textLightPrimary,
+            side: const BorderSide(color: AppColors.borderLight),
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: AppColors.surfaceVariantLight,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: AppColors.borderLight),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: AppColors.borderLight),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: AppColors.primaryDark),
+          ),
+          hintStyle: GoogleFonts.manrope(
+            color: AppColors.textLightMuted,
+          ),
+        ),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          backgroundColor: AppColors.cardLight,
+          selectedItemColor: AppColors.primaryDark,
+          unselectedItemColor: AppColors.textLightMuted,
+          type: BottomNavigationBarType.fixed,
         ),
       );
 
@@ -209,4 +272,14 @@ class AppTheme {
       ),
     );
   }
+}
+
+/// Convenience extension for theme-aware color access.
+extension ThemeHelper on BuildContext {
+  bool get isDark => Theme.of(this).brightness == Brightness.dark;
+  ColorScheme get colorScheme => Theme.of(this).colorScheme;
+
+  /// Pick a color based on the current brightness.
+  Color adaptiveColor({required Color dark, required Color light}) =>
+      isDark ? dark : light;
 }

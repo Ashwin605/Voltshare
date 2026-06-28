@@ -61,8 +61,10 @@ class _ChargerMapScreenState extends State<ChargerMapScreen>
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: const Color(0xFF131313),
+      backgroundColor: cs.surface,
       body: Stack(
         children: [
           // Map background
@@ -101,6 +103,9 @@ class _ChargerMapScreenState extends State<ChargerMapScreen>
 
   Widget _buildFlutterMap() {
     final center = _currentPosition ?? const LatLng(18.5204, 73.8567);
+    final isDark = context.isDark;
+    final mapStyle = isDark ? 'dark_all' : 'light_all';
+
     return FlutterMap(
       options: MapOptions(
         initialCenter: center,
@@ -108,7 +113,7 @@ class _ChargerMapScreenState extends State<ChargerMapScreen>
       ),
       children: [
         TileLayer(
-          urlTemplate: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+          urlTemplate: 'https://{s}.basemaps.cartocdn.com/$mapStyle/{z}/{x}/{y}.png',
           subdomains: const ['a', 'b', 'c', 'd'],
         ),
         MarkerLayer(
@@ -138,14 +143,17 @@ class _ChargerMapScreenState extends State<ChargerMapScreen>
   }
 
   Widget _buildPulsingPin(bool isActive) {
+    final cs = Theme.of(context).colorScheme;
+    final isDark = context.isDark;
+
     if (!isActive) {
       return Container(
         width: 12,
         height: 12,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: const Color(0xFF1C1B1B),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+          color: cs.surfaceContainerHighest,
+          border: Border.all(color: cs.onSurface.withValues(alpha: 0.2)),
         ),
       );
     }
@@ -173,7 +181,7 @@ class _ChargerMapScreenState extends State<ChargerMapScreen>
               shape: BoxShape.circle,
               color: AppColors.primary,
               border: Border.all(
-                  color: const Color(0xFF131313), width: 2),
+                  color: isDark ? const Color(0xFF131313) : Colors.white, width: 2),
               boxShadow: [
                 BoxShadow(
                   color: AppColors.primary.withValues(alpha: 0.5),
@@ -188,6 +196,8 @@ class _ChargerMapScreenState extends State<ChargerMapScreen>
   }
 
   Widget _buildTopBar() {
+    final cs = Theme.of(context).colorScheme;
+
     return Container(
       padding: EdgeInsets.only(
         top: MediaQuery.of(context).padding.top + 8,
@@ -196,10 +206,10 @@ class _ChargerMapScreenState extends State<ChargerMapScreen>
         bottom: 8,
       ),
       decoration: BoxDecoration(
-        color: const Color(0xFF131313).withValues(alpha: 0.8),
+        color: cs.surface.withValues(alpha: 0.8),
         border: Border(
           bottom:
-              BorderSide(color: Colors.white.withValues(alpha: 0.05)),
+              BorderSide(color: cs.onSurface.withValues(alpha: 0.05)),
         ),
       ),
       child: Row(
@@ -210,25 +220,25 @@ class _ChargerMapScreenState extends State<ChargerMapScreen>
             children: [
               Row(
                 children: [
-                  const Icon(Icons.near_me, color: Colors.white, size: 20),
+                  Icon(Icons.near_me, color: cs.onSurface, size: 20),
                   const SizedBox(width: 8),
                   Text(
                     '70/549',
                     style: GoogleFonts.manrope(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
-                      color: Colors.white,
+                      color: cs.onSurface,
                     ),
                   ),
                   Icon(Icons.expand_more,
-                      color: AppColors.textSecondary, size: 20),
+                      color: cs.onSurfaceVariant, size: 20),
                 ],
               ),
               Text(
                 'Maharshi Nagar, Pune, Maharashtra, India',
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 12,
-                  color: AppColors.textSecondary,
+                  color: cs.onSurfaceVariant,
                 ),
               ),
             ],
@@ -238,11 +248,11 @@ class _ChargerMapScreenState extends State<ChargerMapScreen>
             child: Container(
               width: 40,
               height: 40,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white,
+                color: cs.onSurface,
               ),
-              child: const Icon(Icons.person, color: Color(0xFF131313)),
+              child: Icon(Icons.person, color: cs.surface),
             ),
           ),
         ],
@@ -251,32 +261,34 @@ class _ChargerMapScreenState extends State<ChargerMapScreen>
   }
 
   Widget _buildSearchAndFilters() {
+    final cs = Theme.of(context).colorScheme;
+
     return Column(
       children: [
         // Search bar
         Container(
           height: 56,
           decoration: BoxDecoration(
-            color: const Color(0xFF1C1B1B).withValues(alpha: 0.9),
+            color: cs.surfaceContainer.withValues(alpha: 0.9),
             borderRadius: BorderRadius.circular(12),
             border:
-                Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                Border.all(color: cs.onSurface.withValues(alpha: 0.1)),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Row(
             children: [
               Icon(Icons.search,
-                  color: Colors.white.withValues(alpha: 0.5)),
+                  color: cs.onSurface.withValues(alpha: 0.5)),
               const SizedBox(width: 12),
               Expanded(
                 child: TextField(
                   controller: _searchController,
                   style:
-                      GoogleFonts.plusJakartaSans(color: Colors.white),
+                      GoogleFonts.plusJakartaSans(color: cs.onSurface),
                   decoration: InputDecoration(
                     hintText: 'Search destination or charger ID',
                     hintStyle: GoogleFonts.plusJakartaSans(
-                        color: Colors.white.withValues(alpha: 0.5)),
+                        color: cs.onSurface.withValues(alpha: 0.5)),
                     border: InputBorder.none,
                     enabledBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
@@ -290,7 +302,7 @@ class _ChargerMapScreenState extends State<ChargerMapScreen>
                 height: 32,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white.withValues(alpha: 0.1),
+                  color: cs.onSurface.withValues(alpha: 0.1),
                 ),
                 child: const Icon(Icons.my_location,
                     color: AppColors.primary, size: 16),
@@ -317,12 +329,12 @@ class _ChargerMapScreenState extends State<ChargerMapScreen>
                   decoration: BoxDecoration(
                     color: isSelected
                         ? AppColors.primary.withValues(alpha: 0.1)
-                        : const Color(0xFF1C1B1B),
+                        : cs.surfaceContainer,
                     borderRadius: BorderRadius.circular(100),
                     border: Border.all(
                       color: isSelected
                           ? AppColors.primary
-                          : Colors.white.withValues(alpha: 0.1),
+                          : cs.outlineVariant,
                     ),
                   ),
                   child: Row(
@@ -335,7 +347,7 @@ class _ChargerMapScreenState extends State<ChargerMapScreen>
                               size: 16,
                               color: isSelected
                                   ? AppColors.primary
-                                  : Colors.white),
+                                  : cs.onSurfaceVariant),
                         ),
                       if (index == 2)
                         Padding(
@@ -350,7 +362,7 @@ class _ChargerMapScreenState extends State<ChargerMapScreen>
                           fontWeight: FontWeight.w700,
                           color: isSelected
                               ? AppColors.primary
-                              : Colors.white,
+                              : cs.onSurfaceVariant,
                         ),
                       ),
                     ],
@@ -365,38 +377,44 @@ class _ChargerMapScreenState extends State<ChargerMapScreen>
   }
 
   Widget _buildFilterFab() {
+    final cs = Theme.of(context).colorScheme;
+    final isDark = context.isDark;
+
     return Container(
       width: 48,
       height: 48,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: const Color(0xFF1C1B1B),
+        color: cs.surfaceContainer,
         border:
-            Border.all(color: Colors.white.withValues(alpha: 0.1)),
+            Border.all(color: cs.outlineVariant),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.3),
+            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.1),
             blurRadius: 12,
           ),
         ],
       ),
-      child: const Icon(Icons.tune, color: Colors.white),
+      child: Icon(Icons.tune, color: cs.onSurface),
     ).animate().fadeIn(delay: 600.ms).scale(begin: const Offset(0.5, 0.5));
   }
 
   Widget _buildChargerCard() {
+    final cs = Theme.of(context).colorScheme;
+    final isDark = context.isDark;
+
     return GestureDetector(
       onTap: () => context.push('/charger-details'),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: const Color(0xFF1C1B1B),
+          color: cs.surfaceContainer,
           borderRadius: BorderRadius.circular(8),
           border:
-              Border.all(color: Colors.white.withValues(alpha: 0.1)),
+              Border.all(color: cs.outlineVariant),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.3),
+              color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.1),
               blurRadius: 20,
             ),
           ],
@@ -448,22 +466,22 @@ class _ChargerMapScreenState extends State<ChargerMapScreen>
                         style: GoogleFonts.manrope(
                           fontSize: 22,
                           fontWeight: FontWeight.w700,
-                          color: Colors.white,
+                          color: cs.onSurface,
                         ),
                       ),
                       const SizedBox(height: 4),
                       Row(
                         children: [
-                          const Icon(Icons.straighten,
+                          Icon(Icons.straighten,
                               size: 16,
-                              color: AppColors.textSecondary),
+                              color: cs.onSurfaceVariant),
                           const SizedBox(width: 4),
                           Text(
                             '0.8km away',
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 14,
                               color:
-                                  Colors.white.withValues(alpha: 0.7),
+                                  cs.onSurfaceVariant,
                             ),
                           ),
                         ],
@@ -476,20 +494,20 @@ class _ChargerMapScreenState extends State<ChargerMapScreen>
                   height: 40,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    color: Colors.white.withValues(alpha: 0.05),
+                    color: cs.onSurface.withValues(alpha: 0.05),
                     border: Border.all(
                         color:
-                            Colors.white.withValues(alpha: 0.1)),
+                            cs.onSurface.withValues(alpha: 0.1)),
                   ),
-                  child: const Icon(Icons.ev_station,
-                      color: Colors.white),
+                  child: Icon(Icons.ev_station,
+                      color: cs.onSurface),
                 ),
               ],
             ),
             const SizedBox(height: 16),
             Container(
               height: 1,
-              color: Colors.white.withValues(alpha: 0.1),
+              color: cs.onSurface.withValues(alpha: 0.1),
             ),
             const SizedBox(height: 16),
             Row(
@@ -504,7 +522,7 @@ class _ChargerMapScreenState extends State<ChargerMapScreen>
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
-                        color: Colors.white.withValues(alpha: 0.7),
+                        color: cs.onSurfaceVariant,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -513,7 +531,7 @@ class _ChargerMapScreenState extends State<ChargerMapScreen>
                         style: GoogleFonts.manrope(
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
-                          color: Colors.white,
+                          color: cs.onSurface,
                         ),
                         children: [
                           const TextSpan(text: '₹12'),
@@ -522,8 +540,7 @@ class _ChargerMapScreenState extends State<ChargerMapScreen>
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
-                              color: Colors.white
-                                  .withValues(alpha: 0.7),
+                              color: cs.onSurfaceVariant,
                             ),
                           ),
                         ],

@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vnest_app/core/theme/app_theme.dart';
+import 'package:vnest_app/core/theme/theme_notifier.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -15,9 +16,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   double _walletBalance = 2480.0;
 
   void _showWalletDialog(String title) {
+    final cs = Theme.of(context).colorScheme;
+
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.surfaceDark,
+      backgroundColor: cs.surface,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
@@ -34,19 +37,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(title, style: GoogleFonts.sora(
-                fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white,
+                fontSize: 24, fontWeight: FontWeight.bold, color: cs.onSurface,
               )),
               const SizedBox(height: 24),
               TextField(
                 controller: amountController,
                 keyboardType: TextInputType.number,
-                style: const TextStyle(color: Colors.white, fontSize: 24),
+                style: TextStyle(color: cs.onSurface, fontSize: 24),
                 decoration: InputDecoration(
                   prefixText: '₹ ',
-                  prefixStyle: const TextStyle(color: Colors.white, fontSize: 24),
+                  prefixStyle: TextStyle(color: cs.onSurface, fontSize: 24),
                   hintText: '0.00',
-                  hintStyle: TextStyle(color: AppColors.textMuted, fontSize: 24),
-                  enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppColors.borderDark)),
+                  hintStyle: TextStyle(color: cs.onSurfaceVariant, fontSize: 24),
+                  enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: cs.outlineVariant)),
                   focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppColors.primary)),
                 ),
               ),
@@ -71,8 +74,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     context.pop();
                   },
                   style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: Colors.black,
+                    backgroundColor: cs.primary,
+                    foregroundColor: cs.onPrimary,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                   child: const Text('Confirm', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
@@ -88,8 +91,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final isDark = context.isDark;
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
+
     return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
       body: SafeArea(
         child: Column(
           children: [
@@ -107,11 +113,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         context.go('/home');
                       }
                     },
-                    icon: const Icon(Icons.arrow_back, color: Colors.white),
+                    icon: Icon(Icons.arrow_back, color: cs.onSurface),
                   ),
                   IconButton(
                     onPressed: () => context.push('/privacy'),
-                    icon: const Icon(Icons.settings, color: Colors.white),
+                    icon: Icon(Icons.settings, color: cs.onSurface),
                   ),
                 ],
               ),
@@ -130,6 +136,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     // Impact stats
                     _buildImpactRow(),
                     const SizedBox(height: 24),
+                    // Theme toggle
+                    _buildThemeToggle(),
+                    const SizedBox(height: 16),
                     // Settings list
                     _buildSettingsList(context),
                     const SizedBox(height: 24),
@@ -146,6 +155,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildProfileHeader() {
+    final cs = Theme.of(context).colorScheme;
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
+
     return Column(
       children: [
         // Avatar with glow ring
@@ -163,12 +175,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.backgroundDark,
-              border: Border.all(color: AppColors.backgroundDark, width: 3),
+              color: bgColor,
+              border: Border.all(color: bgColor, width: 3),
             ),
             child: CircleAvatar(
-              backgroundColor: AppColors.surfaceDark,
-              child: const Icon(Icons.person, color: AppColors.textSecondary, size: 40),
+              backgroundColor: cs.surface,
+              child: Icon(Icons.person, color: cs.onSurfaceVariant, size: 40),
             ),
           ),
         ),
@@ -178,7 +190,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             Text('Maya Sharma', style: GoogleFonts.sora(
               fontSize: 28, fontWeight: FontWeight.w800,
-              color: Colors.white, letterSpacing: -0.5,
+              color: cs.onSurface, letterSpacing: -0.5,
             )),
             const SizedBox(width: 8),
             const Icon(Icons.verified, color: AppColors.primary, size: 20),
@@ -188,12 +200,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
           decoration: BoxDecoration(
-            color: AppColors.surfaceVariantDark,
+            color: cs.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(100),
           ),
           child: Text('DRIVER · HOST', style: GoogleFonts.plusJakartaSans(
             fontSize: 10, fontWeight: FontWeight.w700,
-            color: AppColors.textSecondary, letterSpacing: 2,
+            color: cs.onSurfaceVariant, letterSpacing: 2,
           )),
         ),
       ],
@@ -295,6 +307,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildImpactRow() {
+    final cs = Theme.of(context).colorScheme;
+
     final stats = [
       {'icon': Icons.bolt, 'value': '142', 'label': 'kWh Charged'},
       {'icon': Icons.eco, 'value': '41', 'label': 'kg CO₂ Saved'},
@@ -309,21 +323,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
             margin: EdgeInsets.only(right: e.key < 2 ? 12 : 0),
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: const Color(0xFF0A0A0A),
+              color: cs.surfaceContainer,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.borderDark),
+              border: Border.all(color: cs.outlineVariant),
             ),
             child: Column(
               children: [
                 Icon(stat['icon'] as IconData, color: AppColors.primary, size: 28),
                 const SizedBox(height: 8),
                 Text(stat['value'] as String, style: GoogleFonts.sora(
-                  fontSize: 20, fontWeight: FontWeight.w700, color: Colors.white,
+                  fontSize: 20, fontWeight: FontWeight.w700, color: cs.onSurface,
                 )),
                 const SizedBox(height: 4),
                 Text(stat['label'] as String, style: GoogleFonts.plusJakartaSans(
                   fontSize: 11, fontWeight: FontWeight.w700,
-                  color: AppColors.textSecondary, letterSpacing: 0.5,
+                  color: cs.onSurfaceVariant, letterSpacing: 0.5,
                 ),
                 textAlign: TextAlign.center,
                 ),
@@ -335,7 +349,57 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ).animate().fadeIn(delay: 400.ms);
   }
 
+  Widget _buildThemeToggle() {
+    final cs = Theme.of(context).colorScheme;
+    final isDark = context.isDark;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Material(
+        color: cs.surfaceContainer,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: cs.outlineVariant),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 40, height: 40,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: cs.surfaceContainerHighest,
+                ),
+                child: Icon(
+                  isDark ? Icons.dark_mode : Icons.light_mode,
+                  color: isDark ? AppColors.primary : AppColors.warning,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text('Dark Mode', style: GoogleFonts.manrope(
+                  fontSize: 16, fontWeight: FontWeight.w600, color: cs.onSurface,
+                )),
+              ),
+              Switch(
+                value: isDark,
+                onChanged: (_) => ThemeNotifier().toggle(),
+                activeColor: AppColors.primary,
+                activeTrackColor: AppColors.primary.withValues(alpha: 0.3),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ).animate().fadeIn(delay: 450.ms).slideX(begin: 0.05);
+  }
+
   Widget _buildSettingsList(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     final settings = [
       {'icon': Icons.directions_car, 'label': 'Launch Car Display Demo', 'route': '/carplay'},
       {'icon': Icons.monitor_heart, 'label': 'Host Telemetry Dashboard', 'route': '/host-telemetry'},
@@ -354,7 +418,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         return Padding(
           padding: const EdgeInsets.only(bottom: 8),
           child: Material(
-            color: isHighlighted ? highlightColor.withValues(alpha: 0.1) : const Color(0xFF0A0A0A),
+            color: isHighlighted ? highlightColor.withValues(alpha: 0.1) : cs.surfaceContainer,
             borderRadius: BorderRadius.circular(12),
             child: InkWell(
               onTap: () {
@@ -368,7 +432,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: isHighlighted ? highlightColor.withValues(alpha: 0.3) : AppColors.borderDark
+                    color: isHighlighted ? highlightColor.withValues(alpha: 0.3) : cs.outlineVariant
                   ),
                 ),
                 child: Row(
@@ -377,17 +441,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       width: 40, height: 40,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: isHighlighted ? highlightColor : AppColors.surfaceVariantDark,
+                        color: isHighlighted ? highlightColor : cs.surfaceContainerHighest,
                       ),
-                      child: Icon(setting['icon'] as IconData, color: isHighlighted ? Colors.black : Colors.white, size: 20),
+                      child: Icon(setting['icon'] as IconData, color: isHighlighted ? Colors.black : cs.onSurface, size: 20),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
                       child: Text(setting['label'] as String, style: GoogleFonts.manrope(
-                        fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white,
+                        fontSize: 16, fontWeight: FontWeight.w600, color: cs.onSurface,
                       )),
                     ),
-                    const Icon(Icons.chevron_right, color: AppColors.textSecondary),
+                    Icon(Icons.chevron_right, color: cs.onSurfaceVariant),
                   ],
                 ),
               ),
@@ -399,18 +463,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildFooter(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return Column(
       children: [
         TextButton(
           onPressed: () => context.go('/login'),
           child: Text('Sign out', style: GoogleFonts.manrope(
-            color: AppColors.textSecondary, fontWeight: FontWeight.w500,
+            color: cs.onSurfaceVariant, fontWeight: FontWeight.w500,
           )),
         ),
         const SizedBox(height: 8),
         Text('v0.9.2 · VOLTNEST', style: GoogleFonts.plusJakartaSans(
           fontSize: 11, fontWeight: FontWeight.w700,
-          color: AppColors.textMuted.withValues(alpha: 0.5), letterSpacing: 2,
+          color: cs.onSurfaceVariant.withValues(alpha: 0.5), letterSpacing: 2,
         )),
       ],
     ).animate().fadeIn(delay: 1000.ms);

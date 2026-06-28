@@ -42,8 +42,10 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: const Color(0xFF131313),
+      backgroundColor: cs.surface,
       body: Stack(
         children: [
           CustomScrollView(
@@ -52,7 +54,7 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
               SliverAppBar(
                 expandedHeight: 300,
                 pinned: true,
-                backgroundColor: const Color(0xFF131313),
+                backgroundColor: cs.surface,
                 leading: IconButton(
                   onPressed: () => context.pop(),
                   icon: Container(
@@ -76,7 +78,7 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
                             end: Alignment.bottomRight,
                             colors: [
                               AppColors.primary.withValues(alpha: 0.2),
-                              const Color(0xFF131313),
+                              cs.surface,
                             ],
                           ),
                         ),
@@ -95,11 +97,11 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
                         right: 0,
                         child: Container(
                           height: 128,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             gradient: LinearGradient(
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
-                              colors: [Colors.transparent, Color(0xFF131313)],
+                              colors: [Colors.transparent, cs.surface],
                             ),
                           ),
                         ),
@@ -112,9 +114,9 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            _dot(true),
-                            _dot(false),
-                            _dot(false),
+                            _dot(context, true),
+                            _dot(context, false),
+                            _dot(context, false),
                           ],
                         ),
                       ),
@@ -127,19 +129,19 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
                     // Header info
-                    _buildHeaderSection(),
+                    _buildHeaderSection(context),
                     const SizedBox(height: 24),
                     // Specs grid
-                    _buildSpecsGrid(),
+                    _buildSpecsGrid(context),
                     const SizedBox(height: 24),
                     // Pricing card
-                    _buildPricingCard(),
+                    _buildPricingCard(context),
                     const SizedBox(height: 24),
                     // Location card
-                    _buildLocationCard(),
+                    _buildLocationCard(context),
                     const SizedBox(height: 24),
                     // Host card
-                    _buildHostCard(),
+                    _buildHostCard(context),
                     const SizedBox(height: 120),
                   ]),
                 ),
@@ -158,14 +160,15 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
     );
   }
 
-  Widget _dot(bool active) {
+  Widget _dot(BuildContext context, bool active) {
+    final cs = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4),
       width: 8,
       height: 8,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: active ? AppColors.primary : const Color(0xFF2A2A2A),
+        color: active ? AppColors.primary : cs.surfaceContainerHighest,
         boxShadow: active
             ? [BoxShadow(color: AppColors.primary.withValues(alpha: 0.6), blurRadius: 8)]
             : null,
@@ -173,7 +176,8 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
     );
   }
 
-  Widget _buildHeaderSection() {
+  Widget _buildHeaderSection(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -187,7 +191,7 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
                 style: GoogleFonts.manrope(
                   fontSize: 24,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: cs.onSurface,
                 ),
               ),
             ),
@@ -247,7 +251,8 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
     ).animate().fadeIn().slideY(begin: 0.1);
   }
 
-  Widget _buildSpecsGrid() {
+  Widget _buildSpecsGrid(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final specs = [
       {'icon': Icons.bolt, 'label': 'Power', 'value': '7.2 kW'},
       {'icon': Icons.electrical_services, 'label': 'Type', 'value': 'Type-2'},
@@ -262,9 +267,9 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
             margin: EdgeInsets.only(right: entry.key < 2 ? 8 : 0),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: const Color(0xFF1E1E1E),
+              color: cs.surfaceContainer,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFF444444).withValues(alpha: 0.3)),
+              border: Border.all(color: cs.outlineVariant),
             ),
             child: Column(
               children: [
@@ -273,7 +278,7 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
                   height: 40,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: const Color(0xFF222222),
+                    color: cs.surfaceContainerHighest,
                   ),
                   child: Icon(spec['icon'] as IconData, color: AppColors.primary, size: 20),
                 ),
@@ -283,7 +288,7 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 10,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textSecondary,
+                    color: cs.onSurfaceVariant,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -292,7 +297,7 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                    color: cs.onSurface,
                   ),
                 ),
               ],
@@ -303,16 +308,17 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
     ).animate().fadeIn(delay: 200.ms);
   }
 
-  Widget _buildPricingCard() {
+  Widget _buildPricingCard(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final quote = _quote;
     final currency = NumberFormat.currency(locale: 'en_IN', symbol: '₹', decimalDigits: 2);
 
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E1E1E),
+        color: cs.surfaceContainer,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFF444444).withValues(alpha: 0.3)),
+        border: Border.all(color: cs.outlineVariant),
       ),
       child: Column(
         children: [
@@ -346,7 +352,7 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.textSecondary,
+                        color: cs.onSurfaceVariant,
                         letterSpacing: 1,
                       ),
                     ),
@@ -358,14 +364,14 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
                           style: GoogleFonts.manrope(
                             fontSize: 22,
                             fontWeight: FontWeight.w700,
-                            color: Colors.white,
+                            color: cs.onSurface,
                           ),
                         ),
                         TextSpan(
                           text: ' / kWh',
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 14,
-                            color: AppColors.textSecondary,
+                            color: cs.onSurfaceVariant,
                           ),
                         ),
                       ]),
@@ -377,7 +383,7 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
                   height: 48,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: const Color(0xFF222222).withValues(alpha: 0.5),
+                    color: cs.surfaceContainerHighest.withValues(alpha: 0.5),
                     boxShadow: [
                       BoxShadow(
                         color: AppColors.primary.withValues(alpha: 0.2),
@@ -423,7 +429,7 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 10,
                               fontWeight: FontWeight.w700,
-                              color: AppColors.textSecondary,
+                              color: cs.onSurfaceVariant,
                             ),
                           ),
                         ],
@@ -440,10 +446,11 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
   }
 
   Widget _buildDemandBadge(PricingQuote quote) {
+    final cs = Theme.of(context).colorScheme;
     final color = switch (quote.demandLevel) {
       DemandLevel.high => AppColors.warning,
       DemandLevel.medium => AppColors.primary,
-      DemandLevel.low => AppColors.textSecondary,
+      DemandLevel.low => cs.onSurfaceVariant,
     };
 
     return Container(
@@ -470,7 +477,7 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
             quote.source == PricingSource.ml ? 'ML' : 'Fallback',
             style: GoogleFonts.jetBrainsMono(
               fontSize: 9,
-              color: AppColors.textSecondary,
+              color: cs.onSurfaceVariant,
             ),
           ),
         ],
@@ -478,12 +485,13 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
     );
   }
 
-  Widget _buildLocationCard() {
+  Widget _buildLocationCard(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF1E1E1E),
+        color: cs.surfaceContainer,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFF444444).withValues(alpha: 0.3)),
+        border: Border.all(color: cs.outlineVariant),
       ),
       child: Column(
         children: [
@@ -495,7 +503,7 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
               gradient: LinearGradient(
                 colors: [
                   AppColors.primary.withValues(alpha: 0.1),
-                  const Color(0xFF1E1E1E),
+                  cs.surfaceContainer,
                 ],
               ),
             ),
@@ -516,7 +524,7 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
-                        color: Colors.white,
+                        color: cs.onSurface,
                       ),
                     ),
                     Text(
@@ -524,7 +532,7 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.textSecondary,
+                        color: cs.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -552,13 +560,14 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
     ).animate().fadeIn(delay: 400.ms);
   }
 
-  Widget _buildHostCard() {
+  Widget _buildHostCard(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E1E1E),
+        color: cs.surfaceContainer,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFF444444).withValues(alpha: 0.3)),
+        border: Border.all(color: cs.outlineVariant),
       ),
       child: Row(
         children: [
@@ -568,10 +577,10 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
             height: 56,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFF222222),
-              border: Border.all(color: const Color(0xFF1E1E1E), width: 2),
+              color: cs.surfaceContainerHighest,
+              border: Border.all(color: cs.surfaceContainer, width: 2),
             ),
-            child: const Icon(Icons.person, color: AppColors.textSecondary, size: 28),
+            child: Icon(Icons.person, color: cs.onSurfaceVariant, size: 28),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -583,7 +592,7 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 10,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textSecondary,
+                    color: cs.onSurfaceVariant,
                     letterSpacing: 1,
                   ),
                 ),
@@ -592,7 +601,7 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                    color: cs.onSurface,
                   ),
                 ),
                 Row(
@@ -604,7 +613,7 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
-                        color: Colors.white,
+                        color: cs.onSurface,
                       ),
                     ),
                     Text(
@@ -612,7 +621,7 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.textSecondary,
+                        color: cs.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -625,7 +634,7 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
             height: 40,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFF222222),
+              color: cs.surfaceContainerHighest,
               border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
               boxShadow: [
                 BoxShadow(
@@ -642,6 +651,7 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
   }
 
   Widget _buildBottomCta(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Container(
       padding: EdgeInsets.only(
         left: 16,
@@ -650,8 +660,8 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
         top: 16,
       ),
       decoration: BoxDecoration(
-        color: const Color(0xFF131313).withValues(alpha: 0.9),
-        border: Border(top: BorderSide(color: const Color(0xFF2A2A2A).withValues(alpha: 0.5))),
+        color: cs.surface.withValues(alpha: 0.9),
+        border: Border(top: BorderSide(color: cs.outlineVariant)),
       ),
       child: SizedBox(
         width: double.infinity,

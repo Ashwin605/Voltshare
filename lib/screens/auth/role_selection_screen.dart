@@ -16,8 +16,10 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
+
     return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
       body: SafeArea(
         child: Column(
           children: [
@@ -31,13 +33,13 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                   height: 40,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.surfaceDark,
-                    border: Border.all(color: AppColors.borderDark),
+                    color: cs.surface,
+                    border: Border.all(color: cs.outlineVariant),
                   ),
                   child: IconButton(
                     onPressed: () => context.pop(),
-                    icon: const Icon(Icons.arrow_back,
-                        color: Colors.white, size: 20),
+                    icon: Icon(Icons.arrow_back,
+                        color: cs.onSurface, size: 20),
                     padding: EdgeInsets.zero,
                   ),
                 ),
@@ -56,7 +58,7 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                         style: GoogleFonts.sora(
                           fontSize: 32,
                           fontWeight: FontWeight.w800,
-                          color: Colors.white,
+                          color: cs.onSurface,
                           height: 1.2,
                         ),
                         children: [
@@ -64,7 +66,7 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                           TextSpan(
                             text: 'VoltNest?',
                             style: GoogleFonts.sora(
-                              color: AppColors.primary,
+                              color: cs.primary,
                               fontSize: 32,
                               fontWeight: FontWeight.w800,
                             ),
@@ -77,7 +79,7 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                       'Select your primary goal to personalize your experience. You can always change this later.',
                       style: GoogleFonts.manrope(
                         fontSize: 15,
-                        color: AppColors.textSecondary,
+                        color: cs.onSurfaceVariant,
                         height: 1.5,
                       ),
                     ).animate().fadeIn(delay: 200.ms),
@@ -131,8 +133,8 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
                   colors: [
-                    AppColors.backgroundDark,
-                    AppColors.backgroundDark.withValues(alpha: 0.95),
+                    bgColor,
+                    bgColor.withValues(alpha: 0.95),
                     Colors.transparent,
                   ],
                 ),
@@ -151,10 +153,10 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                         }
                       : null,
                   style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: Colors.black,
-                    disabledBackgroundColor: AppColors.surfaceDark,
-                    disabledForegroundColor: AppColors.textSecondary,
+                    backgroundColor: cs.primary,
+                    foregroundColor: cs.onPrimary,
+                    disabledBackgroundColor: cs.surface,
+                    disabledForegroundColor: cs.onSurfaceVariant,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(100),
                     ),
@@ -193,6 +195,9 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
     required int delay,
   }) {
     final isSelected = _selectedRole == role;
+    final cs = Theme.of(context).colorScheme;
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
+
     return GestureDetector(
       onTap: () => setState(() => _selectedRole = role),
       child: AnimatedContainer(
@@ -200,10 +205,10 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
         curve: Curves.easeOut,
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: AppColors.surfaceDark,
+          color: cs.surface,
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.borderDark,
+            color: isSelected ? AppColors.primary : cs.outlineVariant,
             width: isSelected ? 2 : 1,
           ),
           boxShadow: isSelected
@@ -265,7 +270,7 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                           style: GoogleFonts.sora(
                             fontSize: 20,
                             fontWeight: FontWeight.w800,
-                            color: Colors.white,
+                            color: cs.onSurface,
                           ),
                         ),
                       ],
@@ -283,14 +288,14 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                         border: Border.all(
                           color: isSelected
                               ? AppColors.primary
-                              : AppColors.borderDark,
+                              : cs.outlineVariant,
                         ),
                       ),
                       child: isSelected
-                          ? const Icon(
+                          ? Icon(
                               Icons.check,
                               size: 14,
-                              color: AppColors.backgroundDark,
+                              color: cs.onPrimary,
                             )
                           : null,
                     ),
@@ -301,7 +306,7 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                   description,
                   style: GoogleFonts.manrope(
                     fontSize: 14,
-                    color: AppColors.textSecondary,
+                    color: cs.onSurfaceVariant,
                     height: 1.5,
                   ),
                 ),
@@ -311,9 +316,9 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    color: AppColors.backgroundDark,
+                    color: bgColor,
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: AppColors.borderDark),
+                    border: Border.all(color: cs.outlineVariant),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -325,7 +330,7 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                         style: GoogleFonts.manrope(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: Colors.white,
+                          color: cs.onSurface,
                         ),
                       ),
                     ],

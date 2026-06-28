@@ -38,14 +38,17 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final isDark = context.isDark;
+
     return Scaffold(
-      backgroundColor: const Color(0xFF131313),
+      backgroundColor: cs.surface,
       body: Stack(
         children: [
           // Simulated Map Background
           Positioned.fill(
             child: CustomPaint(
-              painter: _TripMapPainter(showRoute: _routePlanned),
+              painter: _TripMapPainter(showRoute: _routePlanned, isDark: isDark),
             ),
           ),
           
@@ -73,7 +76,7 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> {
           // Loading Overlay
           if (_isCalculating)
             Container(
-              color: AppColors.backgroundDark.withValues(alpha: 0.7),
+              color: cs.surface.withValues(alpha: 0.7),
               child: Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -83,7 +86,7 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> {
                     Text(
                       'VoltNest AI analyzing topography\nand charger availability...',
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.manrope(color: Colors.white, fontWeight: FontWeight.w600),
+                      style: GoogleFonts.manrope(color: cs.onSurface, fontWeight: FontWeight.w600),
                     ).animate().fadeIn().shimmer(duration: 2000.ms),
                   ],
                 ),
@@ -95,15 +98,18 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> {
   }
 
   Widget _buildPlannerCard() {
+    final cs = Theme.of(context).colorScheme;
+    final isDark = context.isDark;
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.surfaceDark.withValues(alpha: 0.95),
+        color: cs.surfaceContainer.withValues(alpha: 0.95),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.borderDark),
+        border: Border.all(color: cs.outlineVariant),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.3),
+            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.1),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -133,21 +139,21 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             decoration: BoxDecoration(
-              color: AppColors.surfaceVariantDark,
+              color: cs.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
               children: [
-                const Icon(Icons.my_location, color: AppColors.textSecondary, size: 18),
+                Icon(Icons.my_location, color: cs.onSurfaceVariant, size: 18),
                 const SizedBox(width: 12),
                 Expanded(
                   child: TextField(
                     controller: _startController,
-                    style: GoogleFonts.manrope(color: Colors.white),
+                    style: GoogleFonts.manrope(color: cs.onSurface),
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       hintText: 'Start location',
-                      hintStyle: GoogleFonts.manrope(color: AppColors.textMuted),
+                      hintStyle: GoogleFonts.manrope(color: cs.onSurfaceVariant),
                     ),
                   ),
                 ),
@@ -161,7 +167,7 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             decoration: BoxDecoration(
-              color: AppColors.surfaceVariantDark,
+              color: cs.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
@@ -171,11 +177,11 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> {
                 Expanded(
                   child: TextField(
                     controller: _destController,
-                    style: GoogleFonts.manrope(color: Colors.white),
+                    style: GoogleFonts.manrope(color: cs.onSurface),
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       hintText: 'Where to?',
-                      hintStyle: GoogleFonts.manrope(color: AppColors.textMuted),
+                      hintStyle: GoogleFonts.manrope(color: cs.onSurfaceVariant),
                     ),
                   ),
                 ),
@@ -188,7 +194,7 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> {
           // Current Battery
           Row(
             children: [
-              Text('Current Battery: ', style: GoogleFonts.manrope(color: AppColors.textSecondary)),
+              Text('Current Battery: ', style: GoogleFonts.manrope(color: cs.onSurfaceVariant)),
               SizedBox(
                 width: 60,
                 child: TextField(
@@ -221,10 +227,13 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> {
   }
 
   Widget _buildRouteResults() {
+    final cs = Theme.of(context).colorScheme;
+    final isDark = context.isDark;
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.surfaceDark.withValues(alpha: 0.95),
+        color: cs.surfaceContainer.withValues(alpha: 0.95),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
         boxShadow: [
@@ -245,17 +254,17 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Optimal Route Found', style: GoogleFonts.manrope(
-                    fontSize: 18, fontWeight: FontWeight.w800, color: Colors.white,
+                    fontSize: 18, fontWeight: FontWeight.w800, color: cs.onSurface,
                   )),
                   Text('Arrival with 15% battery', style: GoogleFonts.plusJakartaSans(
-                    fontSize: 12, color: AppColors.textSecondary,
+                    fontSize: 12, color: cs.onSurfaceVariant,
                   )),
                 ],
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: AppColors.surfaceVariantDark,
+                  color: cs.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
@@ -264,7 +273,7 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> {
                       fontWeight: FontWeight.w700, color: AppColors.primary,
                     )),
                     Text('340 km', style: GoogleFonts.plusJakartaSans(
-                      fontSize: 10, color: AppColors.textMuted,
+                      fontSize: 10, color: cs.onSurfaceVariant,
                     )),
                   ],
                 ),
@@ -277,7 +286,7 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> {
           _buildTimelineStop(Icons.bolt, 'VoltCharge Fast Hub', 'Charge for 25m • ₹320 est.', AppColors.primary),
           Padding(
             padding: const EdgeInsets.only(left: 15),
-            child: Container(width: 2, height: 20, color: AppColors.borderDark),
+            child: Container(width: 2, height: 20, color: cs.outlineVariant),
           ),
           _buildTimelineStop(Icons.ev_station, 'GreenTech Station', 'Charge for 15m • ₹180 est.', AppColors.primary),
           
@@ -288,9 +297,9 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> {
             child: FilledButton.icon(
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Starting Trip Navigation...'),
-                    backgroundColor: Color(0xFF1E1E1E),
+                  SnackBar(
+                    content: const Text('Starting Trip Navigation...'),
+                    backgroundColor: cs.inverseSurface,
                     behavior: SnackBarBehavior.floating,
                   ),
                 );
@@ -310,6 +319,8 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> {
   }
 
   Widget _buildTimelineStop(IconData icon, String title, String subtitle, Color iconColor) {
+    final cs = Theme.of(context).colorScheme;
+
     return Row(
       children: [
         Container(
@@ -326,10 +337,10 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(title, style: GoogleFonts.manrope(
-              fontWeight: FontWeight.w600, color: Colors.white, fontSize: 14,
+              fontWeight: FontWeight.w600, color: cs.onSurface, fontSize: 14,
             )),
             Text(subtitle, style: GoogleFonts.plusJakartaSans(
-              color: AppColors.textSecondary, fontSize: 12,
+              color: cs.onSurfaceVariant, fontSize: 12,
             )),
           ],
         ),
@@ -340,13 +351,14 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> {
 
 class _TripMapPainter extends CustomPainter {
   final bool showRoute;
-  _TripMapPainter({required this.showRoute});
+  final bool isDark;
+  _TripMapPainter({required this.showRoute, required this.isDark});
 
   @override
   void paint(Canvas canvas, Size size) {
     // Grid
     final gridPaint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.03)
+      ..color = (isDark ? Colors.white : Colors.black).withValues(alpha: 0.03)
       ..strokeWidth = 1;
       
     for (double i = 0; i < size.width; i += 40) {
@@ -381,7 +393,7 @@ class _TripMapPainter extends CustomPainter {
       canvas.drawPath(path, routePaint);
       
       // Draw stops
-      final stopPaint = Paint()..color = Colors.white;
+      final stopPaint = Paint()..color = (isDark ? Colors.white : Colors.black);
       final borderPaint = Paint()..color = AppColors.primary..style = PaintingStyle.stroke..strokeWidth = 3;
       
       final stops = [
@@ -399,5 +411,6 @@ class _TripMapPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _TripMapPainter oldDelegate) => showRoute != oldDelegate.showRoute;
+  bool shouldRepaint(covariant _TripMapPainter oldDelegate) => 
+      showRoute != oldDelegate.showRoute || isDark != oldDelegate.isDark;
 }

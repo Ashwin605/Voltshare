@@ -43,20 +43,22 @@ class _BookConfirmScreenState extends State<BookConfirmScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
+      backgroundColor: cs.surface,
       appBar: AppBar(
-        backgroundColor: AppColors.backgroundDark.withValues(alpha: 0.8),
+        backgroundColor: cs.surface.withValues(alpha: 0.8),
         leading: IconButton(
           onPressed: () => context.pop(),
           icon: Container(
             width: 40, height: 40,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.surfaceDark,
-              border: Border.all(color: AppColors.borderDark),
+              color: cs.surfaceContainer,
+              border: Border.all(color: cs.outlineVariant),
             ),
-            child: const Icon(Icons.arrow_back, color: Colors.white, size: 20),
+            child: Icon(Icons.arrow_back, color: cs.onSurface, size: 20),
           ),
         ),
         title: Text(
@@ -65,6 +67,7 @@ class _BookConfirmScreenState extends State<BookConfirmScreen> {
             fontSize: 16,
             fontWeight: FontWeight.w700,
             letterSpacing: 0.5,
+            color: cs.onSurface,
           ),
         ),
         centerTitle: true,
@@ -76,34 +79,37 @@ class _BookConfirmScreenState extends State<BookConfirmScreen> {
             child: Column(
               children: [
                 // Summary card
-                _buildSummaryCard(),
+                _buildSummaryCard(context),
                 const SizedBox(height: 24),
                 // Cost breakdown
-                _buildCostBreakdown(),
+                _buildCostBreakdown(context),
                 const SizedBox(height: 24),
                 // Payment methods
-                _buildPaymentMethods(),
+                _buildPaymentMethods(context),
               ],
             ),
           ),
           // Bottom CTA
           Positioned(
             bottom: 0, left: 0, right: 0,
-            child: _buildBottomCta(),
+            child: _buildBottomCta(context),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildSummaryCard() {
+  Widget _buildSummaryCard(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final isDark = context.isDark;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AppColors.surfaceDark,
+        color: cs.surfaceContainer,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.borderDark),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 20)],
+        border: Border.all(color: cs.outlineVariant),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.1), blurRadius: 20)],
       ),
       child: Column(
         children: [
@@ -116,7 +122,7 @@ class _BookConfirmScreenState extends State<BookConfirmScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('VoltCharge Fast Hub', style: GoogleFonts.sora(
-                      fontSize: 22, fontWeight: FontWeight.w700, color: Colors.white,
+                      fontSize: 22, fontWeight: FontWeight.w700, color: cs.onSurface,
                     )),
                     const SizedBox(height: 8),
                     Row(
@@ -131,7 +137,7 @@ class _BookConfirmScreenState extends State<BookConfirmScreen> {
                         ),
                         const SizedBox(width: 8),
                         Text('HOST: AMAN S.', style: GoogleFonts.jetBrainsMono(
-                          fontSize: 11, color: AppColors.textSecondary, letterSpacing: 1,
+                          fontSize: 11, color: cs.onSurfaceVariant, letterSpacing: 1,
                         )),
                       ],
                     ),
@@ -158,23 +164,23 @@ class _BookConfirmScreenState extends State<BookConfirmScreen> {
                 child: Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: AppColors.surfaceVariantDark,
+                    color: cs.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.borderDark),
+                    border: Border.all(color: cs.outlineVariant),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('RESERVED SLOT', style: GoogleFonts.jetBrainsMono(
-                        fontSize: 10, color: AppColors.textSecondary,
+                        fontSize: 10, color: cs.onSurfaceVariant,
                       )),
                       const SizedBox(height: 8),
                       Text('Today, 14:00 - 15:00', style: GoogleFonts.sora(
-                        fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white,
+                        fontSize: 15, fontWeight: FontWeight.w700, color: cs.onSurface,
                       )),
                       const SizedBox(height: 4),
                       Text('1 hour duration', style: GoogleFonts.manrope(
-                        fontSize: 12, color: AppColors.textSecondary,
+                        fontSize: 12, color: cs.onSurfaceVariant,
                       )),
                     ],
                   ),
@@ -187,19 +193,19 @@ class _BookConfirmScreenState extends State<BookConfirmScreen> {
                   height: 100,
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: AppColors.surfaceVariantDark,
+                    color: cs.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.borderDark),
+                    border: Border.all(color: cs.outlineVariant),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text('LOCATION', style: GoogleFonts.jetBrainsMono(
-                        fontSize: 10, color: AppColors.textSecondary,
+                        fontSize: 10, color: cs.onSurfaceVariant,
                       )),
                       Text('70/549, Maharshi Nagar, Pune', style: GoogleFonts.sora(
-                        fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white,
+                        fontSize: 12, fontWeight: FontWeight.w700, color: cs.onSurface,
                       )),
                     ],
                   ),
@@ -212,22 +218,23 @@ class _BookConfirmScreenState extends State<BookConfirmScreen> {
     ).animate().fadeIn().slideY(begin: 0.1);
   }
 
-  Widget _buildCostBreakdown() {
+  Widget _buildCostBreakdown(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final quote = _quote;
     final currency = NumberFormat.currency(locale: 'en_IN', symbol: '₹', decimalDigits: 2);
 
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AppColors.surfaceDark,
+        color: cs.surfaceContainer,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.borderDark),
+        border: Border.all(color: cs.outlineVariant),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('PRICING SUMMARY', style: GoogleFonts.jetBrainsMono(
-            fontSize: 10, color: AppColors.textSecondary, letterSpacing: 2,
+            fontSize: 10, color: cs.onSurfaceVariant, letterSpacing: 2,
           )),
           const SizedBox(height: 16),
           if (_loading)
@@ -239,6 +246,7 @@ class _BookConfirmScreenState extends State<BookConfirmScreen> {
             )
           else if (quote != null) ...[
             _costRow(
+              context,
               'Base rate (₹${quote.baseRatePerKwh.toStringAsFixed(0)}/kWh)',
               currency.format(quote.baseCost),
               null,
@@ -246,28 +254,30 @@ class _BookConfirmScreenState extends State<BookConfirmScreen> {
             const SizedBox(height: 16),
             if (quote.hasSurge)
               _costRow(
+                context,
                 'Demand surcharge',
                 '+${currency.format(quote.surcharge)}',
                 AppColors.warning,
                 badge: 'x${quote.surgeMultiplier}',
               ),
             if (quote.hasSurge) const SizedBox(height: 16),
-            _buildDemandRow(quote),
+            _buildDemandRow(context, quote),
             const SizedBox(height: 16),
             _costRow(
+              context,
               'Estimated Energy',
               '${quote.estimatedKwh} kWh',
-              AppColors.textSecondary,
+              cs.onSurfaceVariant,
             ),
             const SizedBox(height: 16),
-            Container(height: 1, color: AppColors.borderDark),
+            Container(height: 1, color: cs.outlineVariant),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text('TOTAL TO PAY', style: GoogleFonts.jetBrainsMono(
-                  fontSize: 12, color: AppColors.textSecondary,
+                  fontSize: 12, color: cs.onSurfaceVariant,
                 )),
                 Text(currency.format(quote.totalCost), style: GoogleFonts.sora(
                   fontSize: 32, fontWeight: FontWeight.w800, color: AppColors.primary,
@@ -281,11 +291,12 @@ class _BookConfirmScreenState extends State<BookConfirmScreen> {
     ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1);
   }
 
-  Widget _buildDemandRow(PricingQuote quote) {
+  Widget _buildDemandRow(BuildContext context, PricingQuote quote) {
+    final cs = Theme.of(context).colorScheme;
     final color = switch (quote.demandLevel) {
       DemandLevel.high => AppColors.warning,
       DemandLevel.medium => AppColors.primary,
-      DemandLevel.low => AppColors.textSecondary,
+      DemandLevel.low => cs.onSurfaceVariant,
     };
 
     return Container(
@@ -311,21 +322,22 @@ class _BookConfirmScreenState extends State<BookConfirmScreen> {
           ),
           Text(
             quote.source == PricingSource.ml ? 'ML' : 'Fallback',
-            style: GoogleFonts.jetBrainsMono(fontSize: 10, color: AppColors.textSecondary),
+            style: GoogleFonts.jetBrainsMono(fontSize: 10, color: cs.onSurfaceVariant),
           ),
         ],
       ),
     );
   }
 
-  Widget _costRow(String label, String value, Color? valueColor, {String? badge}) {
+  Widget _costRow(BuildContext context, String label, String value, Color? valueColor, {String? badge}) {
+    final cs = Theme.of(context).colorScheme;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Row(
           children: [
             Text(label, style: GoogleFonts.manrope(
-              fontSize: 14, color: AppColors.textSecondary,
+              fontSize: 14, color: cs.onSurfaceVariant,
             )),
             if (badge != null) ...[
               const SizedBox(width: 8),
@@ -344,30 +356,32 @@ class _BookConfirmScreenState extends State<BookConfirmScreen> {
         ),
         Text(value, style: GoogleFonts.sora(
           fontSize: 14, fontWeight: FontWeight.w700,
-          color: valueColor ?? Colors.white,
+          color: valueColor ?? cs.onSurface,
         )),
       ],
     );
   }
 
-  Widget _buildPaymentMethods() {
+  Widget _buildPaymentMethods(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('SELECT PAYMENT METHOD', style: GoogleFonts.jetBrainsMono(
-          fontSize: 10, color: AppColors.textSecondary, letterSpacing: 2,
+          fontSize: 10, color: cs.onSurfaceVariant, letterSpacing: 2,
         )),
         const SizedBox(height: 12),
-        _paymentOption('upi', Icons.qr_code_scanner, 'UPI / QR', 'GPay, PhonePe, Paytm', true),
+        _paymentOption(context, 'upi', Icons.qr_code_scanner, 'UPI / QR', 'GPay, PhonePe, Paytm', true),
         const SizedBox(height: 12),
-        _paymentOption('card', Icons.credit_card, 'Credit/Debit Card', 'Visa, Mastercard, RuPay', true),
+        _paymentOption(context, 'card', Icons.credit_card, 'Credit/Debit Card', 'Visa, Mastercard, RuPay', true),
         const SizedBox(height: 12),
-        _paymentOption('wallet', Icons.account_balance_wallet, 'Volt Wallet', 'Balance: ₹12.00 (Insufficient)', false),
+        _paymentOption(context, 'wallet', Icons.account_balance_wallet, 'Volt Wallet', 'Balance: ₹12.00 (Insufficient)', false),
       ],
     ).animate().fadeIn(delay: 400.ms);
   }
 
-  Widget _paymentOption(String value, IconData icon, String title, String subtitle, bool enabled) {
+  Widget _paymentOption(BuildContext context, String value, IconData icon, String title, String subtitle, bool enabled) {
+    final cs = Theme.of(context).colorScheme;
     final isSelected = _selectedPayment == value;
     return GestureDetector(
       onTap: enabled ? () => setState(() => _selectedPayment = value) : null,
@@ -375,10 +389,10 @@ class _BookConfirmScreenState extends State<BookConfirmScreen> {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: enabled ? AppColors.surfaceDark : AppColors.surfaceDark.withValues(alpha: 0.5),
+          color: enabled ? cs.surfaceContainer : cs.surfaceContainer.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.borderDark,
+            color: isSelected ? AppColors.primary : cs.outlineVariant,
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -390,15 +404,15 @@ class _BookConfirmScreenState extends State<BookConfirmScreen> {
                 borderRadius: BorderRadius.circular(12),
                 color: isSelected
                     ? AppColors.primary.withValues(alpha: 0.1)
-                    : AppColors.surfaceVariantDark,
+                    : cs.surfaceContainerHighest,
                 border: Border.all(
                   color: isSelected
                       ? AppColors.primary.withValues(alpha: 0.2)
-                      : AppColors.borderDark,
+                      : cs.outlineVariant,
                 ),
               ),
               child: Icon(icon,
-                color: isSelected ? AppColors.primary : AppColors.textSecondary,
+                color: isSelected ? AppColors.primary : cs.onSurfaceVariant,
               ),
             ),
             const SizedBox(width: 16),
@@ -408,13 +422,13 @@ class _BookConfirmScreenState extends State<BookConfirmScreen> {
                 children: [
                   Text(title, style: GoogleFonts.sora(
                     fontSize: 15, fontWeight: FontWeight.w700,
-                    color: enabled ? Colors.white : AppColors.textMuted,
+                    color: enabled ? cs.onSurface : cs.onSurfaceVariant.withValues(alpha: 0.5),
                   )),
                   Text(subtitle, style: GoogleFonts.manrope(
                     fontSize: 12,
                     color: !enabled && value == 'wallet'
                         ? AppColors.warning
-                        : AppColors.textSecondary,
+                        : cs.onSurfaceVariant,
                   )),
                 ],
               ),
@@ -426,7 +440,7 @@ class _BookConfirmScreenState extends State<BookConfirmScreen> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isSelected ? AppColors.primary : AppColors.borderDark,
+                  color: isSelected ? AppColors.primary : cs.outlineVariant,
                   width: 2,
                 ),
               ),
@@ -448,7 +462,8 @@ class _BookConfirmScreenState extends State<BookConfirmScreen> {
     );
   }
 
-  Widget _buildBottomCta() {
+  Widget _buildBottomCta(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final total = _quote != null
         ? NumberFormat.currency(locale: 'en_IN', symbol: '₹', decimalDigits: 2)
             .format(_quote!.totalCost)
@@ -461,8 +476,8 @@ class _BookConfirmScreenState extends State<BookConfirmScreen> {
         top: 20,
       ),
       decoration: BoxDecoration(
-        color: AppColors.backgroundDark.withValues(alpha: 0.9),
-        border: Border(top: BorderSide(color: AppColors.borderDark)),
+        color: cs.surface.withValues(alpha: 0.9),
+        border: Border(top: BorderSide(color: cs.outlineVariant)),
       ),
       child: SizedBox(
         width: double.infinity, height: 56,

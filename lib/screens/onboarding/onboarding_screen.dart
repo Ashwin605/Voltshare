@@ -61,7 +61,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
       body: SafeArea(
         child: Column(
           children: [
@@ -83,6 +82,9 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   }
 
   Widget _buildPage(OnboardingData data, int index) {
+    final cs = Theme.of(context).colorScheme;
+    final isDark = context.isDark;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
@@ -92,9 +94,9 @@ class _OnboardingScreenState extends State<OnboardingScreen>
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: AppColors.surfaceDark,
+                color: cs.surface,
                 borderRadius: BorderRadius.circular(32),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+                border: Border.all(color: cs.onSurface.withValues(alpha: 0.05)),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(32),
@@ -103,7 +105,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                     // Abstract grid background
                     Positioned.fill(
                       child: CustomPaint(
-                        painter: _GridPainter(),
+                        painter: _GridPainter(isDark: isDark),
                       ),
                     ),
                     // Gradient overlay
@@ -115,7 +117,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                             end: Alignment.bottomCenter,
                             colors: [
                               Colors.transparent,
-                              AppColors.surfaceDark.withValues(alpha: 0.9),
+                              cs.surface.withValues(alpha: 0.9),
                             ],
                           ),
                         ),
@@ -141,7 +143,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                       left: 40,
                       child: _buildNode(
                         data.secondaryIcon,
-                        Colors.white,
+                        cs.onSurface,
                         false,
                       ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.3),
                     ),
@@ -170,7 +172,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 style: GoogleFonts.sora(
                   fontSize: 30,
                   fontWeight: FontWeight.w800,
-                  color: Colors.white,
+                  color: cs.onSurface,
                   height: 1.2,
                 ),
               )
@@ -182,7 +184,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 data.subtitle,
                 style: GoogleFonts.manrope(
                   fontSize: 16,
-                  color: AppColors.textSecondary,
+                  color: cs.onSurfaceVariant,
                   height: 1.5,
                 ),
               )
@@ -197,6 +199,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   }
 
   Widget _buildNode(IconData icon, Color color, bool isPulsing) {
+    final cs = Theme.of(context).colorScheme;
+
     return Column(
       children: [
         Stack(
@@ -243,13 +247,13 @@ class _OnboardingScreenState extends State<OnboardingScreen>
               width: isPulsing ? 56 : 48,
               height: isPulsing ? 56 : 48,
               decoration: BoxDecoration(
-                color: AppColors.surfaceVariantDark,
+                color: cs.surfaceContainerHighest,
                 shape: isPulsing ? BoxShape.circle : BoxShape.rectangle,
                 borderRadius: isPulsing ? null : BorderRadius.circular(16),
                 border: Border.all(
                   color: isPulsing
                       ? color.withValues(alpha: 0.3)
-                      : Colors.white.withValues(alpha: 0.1),
+                      : cs.onSurface.withValues(alpha: 0.1),
                 ),
                 boxShadow: [
                   BoxShadow(
@@ -268,6 +272,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   }
 
   Widget _buildFooter() {
+    final cs = Theme.of(context).colorScheme;
+
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -286,7 +292,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   borderRadius: BorderRadius.circular(4),
                   color: _currentPage == index
                       ? AppColors.primary
-                      : AppColors.borderHoverDark,
+                      : cs.outlineVariant,
                   boxShadow: _currentPage == index
                       ? [
                           BoxShadow(
@@ -309,7 +315,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 child: Text(
                   'Skip',
                   style: GoogleFonts.manrope(
-                    color: AppColors.textSecondary,
+                    color: cs.onSurfaceVariant,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -326,8 +332,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   }
                 },
                 style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.black,
+                  backgroundColor: cs.primary,
+                  foregroundColor: cs.onPrimary,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                   shape: RoundedRectangleBorder(
@@ -375,10 +381,13 @@ class OnboardingData {
 }
 
 class _GridPainter extends CustomPainter {
+  final bool isDark;
+  _GridPainter({this.isDark = true});
+
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.03)
+      ..color = (isDark ? Colors.white : Colors.black).withValues(alpha: 0.03)
       ..strokeWidth = 0.5;
 
     for (double x = 0; x < size.width; x += 40) {

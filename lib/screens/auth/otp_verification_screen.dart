@@ -85,8 +85,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
       body: SafeArea(
         child: Column(
           children: [
@@ -99,7 +100,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 children: [
                   IconButton(
                     onPressed: () => context.pop(),
-                    icon: const Icon(Icons.arrow_back, color: Colors.white),
+                    icon: Icon(Icons.arrow_back, color: cs.onSurface),
                     style: IconButton.styleFrom(
                       shape: const CircleBorder(),
                     ),
@@ -109,7 +110,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
-                      color: Colors.white.withValues(alpha: 0.5),
+                      color: cs.onSurface.withValues(alpha: 0.5),
                       letterSpacing: 1,
                     ),
                   ),
@@ -127,7 +128,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       width: 40,
                       height: 4,
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
+                        color: cs.onSurface.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ).animate().fadeIn().scaleX(begin: 0),
@@ -138,7 +139,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       style: GoogleFonts.sora(
                         fontSize: 36,
                         fontWeight: FontWeight.w800,
-                        color: Colors.white,
+                        color: cs.onSurface,
                         height: 1.1,
                       ),
                       textAlign: TextAlign.center,
@@ -151,7 +152,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       "We've sent a 4-digit code to your phone.\nIt'll auto-verify once entered.",
                       style: GoogleFonts.manrope(
                         fontSize: 16,
-                        color: Colors.white.withValues(alpha: 0.6),
+                        color: cs.onSurface.withValues(alpha: 0.6),
                         height: 1.5,
                       ),
                       textAlign: TextAlign.center,
@@ -184,12 +185,12 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                                 style: GoogleFonts.manrope(
                                   fontSize: 36,
                                   fontWeight: FontWeight.w700,
-                                  color: Colors.white,
+                                  color: cs.onSurface,
                                 ),
                                 decoration: InputDecoration(
                                   counterText: '',
                                   filled: true,
-                                  fillColor: AppColors.surfaceDark,
+                                  fillColor: cs.surface,
                                   contentPadding:
                                       const EdgeInsets.symmetric(
                                           vertical: 20),
@@ -199,7 +200,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                                     borderSide: BorderSide(
                                       color: isActive
                                           ? AppColors.warning
-                                          : AppColors.borderDark,
+                                          : cs.outlineVariant,
                                     ),
                                   ),
                                   enabledBorder: OutlineInputBorder(
@@ -208,7 +209,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                                     borderSide: BorderSide(
                                       color: isActive
                                           ? AppColors.warning
-                                          : AppColors.borderDark,
+                                          : cs.outlineVariant,
                                     ),
                                   ),
                                   focusedBorder: OutlineInputBorder(
@@ -237,7 +238,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         Text(
                           "Didn't receive the code? ",
                           style: GoogleFonts.manrope(
-                            color: Colors.white.withValues(alpha: 0.5),
+                            color: cs.onSurface.withValues(alpha: 0.5),
                             fontSize: 14,
                           ),
                         ),
@@ -253,7 +254,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                                 ? 'Resend (${_resendTimer}s)'
                                 : 'Resend',
                             style: GoogleFonts.manrope(
-                              color: Colors.white,
+                              color: cs.onSurface,
                               fontWeight: FontWeight.w600,
                               fontSize: 14,
                             ),

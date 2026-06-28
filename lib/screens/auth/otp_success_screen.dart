@@ -46,13 +46,15 @@ class _OtpSuccessScreenState extends State<OtpSuccessScreen>
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
+
     return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
       body: Stack(
         children: [
           // Blurred background
           Container(
-            color: AppColors.backgroundDark.withValues(alpha: 0.8),
+            color: bgColor.withValues(alpha: 0.8),
           ),
           // Content
           SafeArea(
@@ -80,7 +82,7 @@ class _OtpSuccessScreenState extends State<OtpSuccessScreen>
                       style: GoogleFonts.sora(
                         fontSize: 32,
                         fontWeight: FontWeight.w800,
-                        color: Colors.white,
+                        color: cs.onSurface,
                       ),
                     )
                         .animate()
@@ -91,7 +93,7 @@ class _OtpSuccessScreenState extends State<OtpSuccessScreen>
                       'Successfully authenticated.',
                       style: GoogleFonts.manrope(
                         fontSize: 16,
-                        color: Colors.white.withValues(alpha: 0.7),
+                        color: cs.onSurface.withValues(alpha: 0.7),
                       ),
                     )
                         .animate()
@@ -104,8 +106,8 @@ class _OtpSuccessScreenState extends State<OtpSuccessScreen>
                       child: FilledButton(
                         onPressed: () => context.go('/role-selection'),
                         style: FilledButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          foregroundColor: Colors.black,
+                          backgroundColor: cs.primary,
+                          foregroundColor: cs.onPrimary,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),

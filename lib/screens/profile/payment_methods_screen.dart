@@ -19,9 +19,11 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
   ];
 
   void _showAddPaymentDialog() {
+    final cs = Theme.of(context).colorScheme;
+
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.surfaceDark,
+      backgroundColor: cs.surface,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
@@ -37,17 +39,17 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Add New Card', style: GoogleFonts.sora(
-                fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white,
+                fontSize: 24, fontWeight: FontWeight.bold, color: cs.onSurface,
               )),
               const SizedBox(height: 24),
               TextField(
                 keyboardType: TextInputType.number,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
+                style: TextStyle(color: cs.onSurface),
+                decoration: InputDecoration(
                   labelText: 'Card Number',
-                  labelStyle: TextStyle(color: AppColors.textSecondary),
-                  enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.borderDark)),
-                  focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.primary)),
+                  labelStyle: TextStyle(color: cs.onSurfaceVariant),
+                  enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: cs.outlineVariant)),
+                  focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: cs.primary)),
                 ),
               ),
               const SizedBox(height: 32),
@@ -67,8 +69,8 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                     context.pop();
                   },
                   style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: Colors.black,
+                    backgroundColor: cs.primary,
+                    foregroundColor: cs.onPrimary,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                   child: const Text('Add Card', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
@@ -84,17 +86,18 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: cs.onSurface),
           onPressed: () => context.pop(),
         ),
         title: Text('Payment Methods', style: GoogleFonts.sora(
-          fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white,
+          fontSize: 20, fontWeight: FontWeight.bold, color: cs.onSurface,
         )),
         centerTitle: true,
       ),
@@ -105,7 +108,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Your Cards & Wallets', style: GoogleFonts.manrope(
-                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white,
+                fontSize: 18, fontWeight: FontWeight.bold, color: cs.onSurface,
               )),
               const SizedBox(height: 16),
               ..._methods.asMap().entries.map((e) {
@@ -114,19 +117,19 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                   margin: const EdgeInsets.only(bottom: 12),
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF131313),
+                    color: cs.surfaceContainer,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: method['isDefault'] == true ? AppColors.primary.withValues(alpha: 0.5) : AppColors.borderDark),
+                    border: Border.all(color: method['isDefault'] == true ? cs.primary.withValues(alpha: 0.5) : cs.outlineVariant),
                   ),
                   child: Row(
                     children: [
                       Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: AppColors.surfaceVariantDark,
+                          color: cs.surfaceContainerHighest,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Icon(method['icon'] as IconData, color: Colors.white),
+                        child: Icon(method['icon'] as IconData, color: cs.onSurface),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
@@ -134,11 +137,11 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(method['type'] as String, style: GoogleFonts.manrope(
-                              fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white,
+                              fontSize: 16, fontWeight: FontWeight.bold, color: cs.onSurface,
                             )),
                             const SizedBox(height: 4),
                             Text(method['number'] as String, style: GoogleFonts.plusJakartaSans(
-                              fontSize: 14, color: AppColors.textSecondary,
+                              fontSize: 14, color: cs.onSurfaceVariant,
                             )),
                           ],
                         ),
@@ -147,12 +150,12 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withValues(alpha: 0.1),
+                            color: cs.primary.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(100),
-                            border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+                            border: Border.all(color: cs.primary.withValues(alpha: 0.3)),
                           ),
                           child: Text('Default', style: GoogleFonts.plusJakartaSans(
-                            fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.primary,
+                            fontSize: 12, fontWeight: FontWeight.bold, color: cs.primary,
                           )),
                         ),
                     ],
@@ -164,12 +167,12 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                 width: double.infinity,
                 child: ElevatedButton.icon(
                   onPressed: _showAddPaymentDialog,
-                  icon: const Icon(Icons.add, color: Colors.black),
+                  icon: Icon(Icons.add, color: cs.onPrimary),
                   label: Text('Add New Payment Method', style: GoogleFonts.manrope(
-                    fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black,
+                    fontSize: 16, fontWeight: FontWeight.bold, color: cs.onPrimary,
                   )),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
+                    backgroundColor: cs.primary,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
