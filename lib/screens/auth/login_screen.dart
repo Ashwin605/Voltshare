@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:vnest_app/core/enums/app_enums.dart';
-import 'package:vnest_app/core/providers/auth_provider.dart';
-import 'package:vnest_app/core/services/auth_service.dart';
 import 'package:vnest_app/core/theme/app_theme.dart';
-import 'package:vnest_app/widgets/common/vs_text_field.dart';
-import 'package:vnest_app/widgets/common/vs_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,61 +13,21 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  bool _obscurePassword = true;
-  bool _isLoading = false;
-  String? _errorMessage;
+  final _phoneController = TextEditingController();
+  bool _rememberMe = true;
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
+    _phoneController.dispose();
     super.dispose();
   }
 
-  Future<void> _handleLogin() async {
-    final email = _emailController.text.trim();
-    final password = _passwordController.text;
-
-    if (email.isEmpty || password.isEmpty) {
-      setState(() => _errorMessage = 'Please enter your email and password.');
-      return;
-    }
-
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final user = await AuthProvider().signIn(
-        email: email,
-        password: password,
-      );
-
-      if (!mounted) return;
-
-      // Navigate based on role.
-      switch (user.role) {
-        case UserRole.admin:
-          context.go('/admin-dashboard');
-          break;
-        case UserRole.host:
-          context.go('/host/dashboard');
-          break;
-        case UserRole.user:
-        default:
-          context.go('/home');
-          break;
-      }
-    } catch (e) {
-      setState(() {
-        _errorMessage = FirebaseAuthException.friendlyMessage(e);
-      });
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
-    }
+  void _handleContinue() {
+    final rawPhone = _phoneController.text.trim();
+    final phone = rawPhone.isNotEmpty
+        ? (rawPhone.startsWith('+') ? rawPhone : '+91 $rawPhone')
+        : '+91 89191 88400';
+    context.push('/otp-verification', extra: phone);
   }
 
   @override
@@ -154,13 +110,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ],
                       ),
-                    )
-                        .animate()
-                        .fadeIn(delay: 400.ms)
-                        .scale(begin: const Offset(0.8, 0.8)),
+                    ).animate().fadeIn(delay: 400.ms).scale(begin: const Offset(0.8, 0.8)),
                     const SizedBox(height: 40),
+                    // Login form
                     Text(
-                      'Log in to your account',
+                      'Log in or sign up',
                       style: GoogleFonts.manrope(
                         color: cs.onSurfaceVariant,
                         fontWeight: FontWeight.w500,
@@ -168,96 +122,139 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ).animate().fadeIn(delay: 500.ms),
                     const SizedBox(height: 24),
-
-                    // Error message
-                    if (_errorMessage != null) ...[
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: cs.error.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                              color: cs.error.withValues(alpha: 0.3)),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(Icons.error_outline,
-                                color: cs.error, size: 20),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                _errorMessage!,
+                    // Phone input row
+                    Row(
+                      children: [
+                        // Country code
+                        Container(
+                          height: 56,
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            color: cs.surface,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: cs.outlineVariant),
+                          ),
+                          child: Row(
+                            children: [
+                              const Text('🇮🇳', style: TextStyle(fontSize: 16)),
+                              const SizedBox(width: 6),
+                              Text(
+                                '+91',
                                 style: GoogleFonts.manrope(
-                                  color: cs.error,
-                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: cs.onSurface,
+                                ),
+                              ),
+                              Icon(
+                                Icons.expand_more,
+                                size: 18,
+                                color: cs.onSurface.withValues(alpha: 0.4),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        // Phone number input
+                        Expanded(
+                          child: SizedBox(
+                            height: 56,
+                            child: TextField(
+                              controller: _phoneController,
+                              keyboardType: TextInputType.phone,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                LengthLimitingTextInputFormatter(10),
+                              ],
+                              style: GoogleFonts.manrope(
+                                color: cs.onSurface,
+                                fontSize: 18,
+                              ),
+                              decoration: InputDecoration(
+                                hintText: 'Enter Phone Number',
+                                hintStyle: GoogleFonts.manrope(
+                                  color: cs.onSurfaceVariant,
+                                  fontSize: 16,
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 16),
+                                filled: true,
+                                fillColor: cs.surface,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(color: cs.outlineVariant),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(color: cs.outlineVariant),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                    color: cs.primary,
+                                    width: 1.5,
+                                  ),
                                 ),
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                    ],
-
-                    // Email input
-                    VsTextField(
-                      controller: _emailController,
-                      hint: 'Email address',
-                      prefixIcon: Icons.email_outlined,
-                      keyboardType: TextInputType.emailAddress,
-                    ).animate().fadeIn(delay: 600.ms).slideY(begin: 0.1),
-                    const SizedBox(height: 12),
-
-                    // Password input
-                    VsTextField(
-                      controller: _passwordController,
-                      hint: 'Password',
-                      prefixIcon: Icons.lock_outline,
-                      obscureText: _obscurePassword,
-                      suffix: IconButton(
-                        onPressed: () => setState(
-                            () => _obscurePassword = !_obscurePassword),
-                        icon: Icon(
-                          _obscurePassword
-                              ? Icons.visibility_off_outlined
-                              : Icons.visibility_outlined,
-                          size: 20,
-                        ),
-                      ),
-                    ).animate().fadeIn(delay: 700.ms).slideY(begin: 0.1),
-                    const SizedBox(height: 12),
-
-                    // Forgot password
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: GestureDetector(
-                        onTap: () => context.push('/forgot-password'),
-                        child: Text(
-                          'Forgot password?',
-                          style: GoogleFonts.manrope(
-                            color: cs.primary,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14,
                           ),
                         ),
-                      ),
-                    ).animate().fadeIn(delay: 800.ms),
+                      ],
+                    ).animate().fadeIn(delay: 600.ms).slideY(begin: 0.1),
+                    const SizedBox(height: 16),
+                    // Remember me
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: Checkbox(
+                            value: _rememberMe,
+                            onChanged: (v) =>
+                                setState(() => _rememberMe = v ?? false),
+                            activeColor: AppColors.primary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          'Remember my login for faster sign-in',
+                          style: GoogleFonts.manrope(
+                            color: cs.onSurfaceVariant,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ).animate().fadeIn(delay: 700.ms),
                     const SizedBox(height: 24),
-
-                    // Login button
+                    // Continue button
                     SizedBox(
                       width: double.infinity,
                       height: 56,
-                      child: VsButton(
-                        label: 'Log In',
-                        onPressed: _handleLogin,
-                        isLoading: _isLoading,
-                        width: double.infinity,
+                      child: FilledButton(
+                        onPressed: _handleContinue,
+                        style: FilledButton.styleFrom(
+                          backgroundColor: cs.primary,
+                          foregroundColor: cs.onPrimary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Text(
+                          'Continue',
+                          style: GoogleFonts.manrope(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 18,
+                          ),
+                        ),
                       ),
-                    ).animate().fadeIn(delay: 900.ms).slideY(begin: 0.1),
+                    )
+                        .animate()
+                        .fadeIn(delay: 800.ms)
+                        .slideY(begin: 0.1),
                     const SizedBox(height: 24),
-
                     // Divider
                     Row(
                       children: [
@@ -281,33 +278,18 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Divider(
                                 color: cs.outlineVariant, height: 1)),
                       ],
+                    ).animate().fadeIn(delay: 900.ms),
+                    const SizedBox(height: 24),
+                    // Social logins
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _socialButton(context, Icons.g_mobiledata, 'Google'),
+                        const SizedBox(width: 24),
+                        _socialButton(context, Icons.email_outlined, 'Email'),
+                      ],
                     ).animate().fadeIn(delay: 1000.ms),
                     const SizedBox(height: 24),
-
-                    // Sign up link
-                    SizedBox(
-                      width: double.infinity,
-                      height: 56,
-                      child: OutlinedButton(
-                        onPressed: () => context.push('/signup'),
-                        style: OutlinedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          side: BorderSide(color: cs.outlineVariant),
-                        ),
-                        child: Text(
-                          'Create Account',
-                          style: GoogleFonts.manrope(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16,
-                            color: cs.onSurface,
-                          ),
-                        ),
-                      ),
-                    ).animate().fadeIn(delay: 1100.ms),
-                    const SizedBox(height: 24),
-
                     // Terms
                     Text.rich(
                       TextSpan(
@@ -335,7 +317,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ],
                       ),
                       textAlign: TextAlign.center,
-                    ).animate().fadeIn(delay: 1200.ms),
+                    ).animate().fadeIn(delay: 1100.ms),
                   ],
                 ),
               ),
@@ -354,6 +336,31 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _socialButton(BuildContext context, IconData icon, String label) {
+    final cs = Theme.of(context).colorScheme;
+    return Container(
+      width: 56,
+      height: 56,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: cs.surface,
+        border: Border.all(color: cs.outlineVariant),
+      ),
+      child: IconButton(
+        onPressed: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('$label Login coming soon!'),
+              backgroundColor: cs.surfaceContainerHighest,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        },
+        icon: Icon(icon, color: cs.onSurfaceVariant),
       ),
     );
   }

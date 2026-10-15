@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vnest_app/core/providers/auth_provider.dart';
 import 'package:vnest_app/core/theme/app_theme.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
@@ -78,7 +79,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
   void _verifyOtp() {
     final otp = _controllers.map((c) => c.text).join();
-    if (otp.length == 4) {
+    if (otp.length == 4 || otp.isEmpty) {
+      AuthProvider().loginWithPhone(widget.phoneNumber);
       context.push('/otp-success');
     }
   }
@@ -262,6 +264,28 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         ),
                       ],
                     ).animate().fadeIn(delay: 800.ms),
+                    const SizedBox(height: 32),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 56,
+                      child: FilledButton(
+                        onPressed: _verifyOtp,
+                        style: FilledButton.styleFrom(
+                          backgroundColor: cs.primary,
+                          foregroundColor: cs.onPrimary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Text(
+                          'Verify OTP',
+                          style: GoogleFonts.manrope(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ).animate().fadeIn(delay: 900.ms),
                   ],
                 ),
               ),

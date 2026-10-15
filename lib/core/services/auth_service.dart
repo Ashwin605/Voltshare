@@ -64,12 +64,6 @@ class AuthService {
         .doc(uid)
         .set(userModel.toJson());
 
-    // Send verification email (non-blocking).
-    try {
-      await credential.user!.sendEmailVerification();
-    } catch (e) {
-      debugPrint('Email verification send failed: $e');
-    }
 
     return userModel;
   }

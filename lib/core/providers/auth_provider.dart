@@ -111,9 +111,29 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  /// Log in with mock phone verification.
+  void loginWithPhone(String phone, {String name = 'Ashwin', UserRole role = UserRole.user}) {
+    final now = DateTime.now();
+    _currentUser = UserModel(
+      id: 'usr_mock_ashwin',
+      name: name,
+      email: '${name.toLowerCase().replaceAll(' ', '')}@voltshare.com',
+      phone: phone,
+      role: role,
+      status: AccountStatus.active,
+      createdAt: now,
+      updatedAt: now,
+    );
+    _isLoading = false;
+    _isInitialized = true;
+    notifyListeners();
+  }
+
   /// Sign out.
   Future<void> signOut() async {
-    await _authService.signOut();
+    try {
+      await _authService.signOut();
+    } catch (_) {}
     _currentUser = null;
     notifyListeners();
   }
@@ -123,18 +143,25 @@ class AuthProvider extends ChangeNotifier {
     await _authService.resetPassword(email);
   }
 
-  /// Update the user's role (for onboarding flow).
+  /// Update the user's role (for onboarding/role-selection flow).
   Future<void> setRole(UserRole role) async {
-    if (_currentUser == null) return;
-    await _authService.updateUserRole(_currentUser!.id, role);
+    if (_currentUser == null) {
+      loginWithPhone('+91 8919188400', role: role);
+      return;
+    }
     _currentUser = _currentUser!.copyWith(role: role);
+    try {
+      await _authService.updateUserRole(_currentUser!.id, role);
+    } catch (_) {}
     notifyListeners();
   }
 
   /// Refresh the current user profile from Firestore.
   Future<void> refreshProfile() async {
     if (_currentUser == null) return;
-    _currentUser = await _authService.getUserProfile(_currentUser!.id);
-    notifyListeners();
+    try {
+      _currentUser = await _authService.getUserProfile(_currentUser!.id);
+      notifyListeners();
+    } catch (_) {}
   }
 }

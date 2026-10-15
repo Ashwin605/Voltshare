@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vnest_app/core/enums/app_enums.dart';
+import 'package:vnest_app/core/providers/auth_provider.dart';
 import 'package:vnest_app/core/theme/app_theme.dart';
 
 class RoleSelectionScreen extends StatefulWidget {
@@ -146,8 +148,13 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                   onPressed: _selectedRole != null
                       ? () {
                           if (_selectedRole == 'admin') {
+                            AuthProvider().setRole(UserRole.admin);
                             context.go('/admin-dashboard');
+                          } else if (_selectedRole == 'host') {
+                            AuthProvider().setRole(UserRole.host);
+                            context.go('/host/dashboard');
                           } else {
+                            AuthProvider().setRole(UserRole.user);
                             context.go('/home');
                           }
                         }

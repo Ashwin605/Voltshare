@@ -16,6 +16,9 @@ class AuthGuard {
     final isAuthRoute = state.uri.path == '/login' || 
                         state.uri.path == '/signup' || 
                         state.uri.path == '/forgot-password' ||
+                        state.uri.path == '/otp-verification' ||
+                        state.uri.path == '/otp-success' ||
+                        state.uri.path == '/role-selection' ||
                         state.uri.path == '/onboarding';
 
     // If user is not logged in and trying to access a protected route
@@ -24,8 +27,8 @@ class AuthGuard {
       return '/login?from=${state.uri.path}';
     }
 
-    // If user is logged in and trying to access auth routes, redirect to their dashboard
-    if (isLoggedIn && isAuthRoute) {
+    // If user is logged in and visits login or onboarding directly, redirect to their dashboard
+    if (isLoggedIn && (state.uri.path == '/login' || state.uri.path == '/onboarding')) {
       if (userRole == UserRole.admin) return '/admin-dashboard';
       if (userRole == UserRole.host) return '/host/dashboard';
       return '/home';

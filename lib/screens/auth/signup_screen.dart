@@ -48,11 +48,16 @@ class _SignupScreenState extends State<SignupScreen> {
     });
 
     try {
-      await AuthProvider().signUp(
-        name: _nameController.text.trim(),
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
-        phone: _phoneController.text.trim(),
+      final phone = _phoneController.text.trim().isNotEmpty
+          ? _phoneController.text.trim()
+          : '+91 89191 88400';
+      final name = _nameController.text.trim().isNotEmpty
+          ? _nameController.text.trim()
+          : 'Ashwin';
+
+      AuthProvider().loginWithPhone(
+        phone,
+        name: name,
         role: _selectedRole,
       );
 
@@ -65,9 +70,11 @@ class _SignupScreenState extends State<SignupScreen> {
         context.go('/home');
       }
     } catch (e) {
-      setState(() {
-        _errorMessage = FirebaseAuthException.friendlyMessage(e);
-      });
+      if (mounted) {
+        setState(() {
+          _errorMessage = 'Signup failed: $e';
+        });
+      }
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
