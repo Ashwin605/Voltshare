@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:vnest_app/core/theme/app_theme.dart';
 
 import 'package:vnest_app/core/models/booking_model.dart';
@@ -24,6 +27,8 @@ class _ArrivedMapScreenState extends State<ArrivedMapScreen> {
   late final BookingModel _booking;
   final _sessionService = SessionService();
   Timer? _timer;
+  LatLng? _currentPosition;
+  StreamSubscription<Position>? _positionStream;
 
   @override
   void initState() {
@@ -32,11 +37,38 @@ class _ArrivedMapScreenState extends State<ArrivedMapScreen> {
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (mounted) setState(() => _seconds++);
     });
+    _initLocation();
+  }
+
+  Future<void> _initLocation() async {
+    try {
+      final perm = await Geolocator.checkPermission();
+      if (perm == LocationPermission.denied) {
+        await Geolocator.requestPermission();
+      }
+      final pos = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
+      );
+      if (mounted) {
+        setState(() => _currentPosition = LatLng(pos.latitude, pos.longitude));
+      }
+      _positionStream = Geolocator.getPositionStream(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          distanceFilter: 10,
+        ),
+      ).listen((Position p) {
+        if (mounted) {
+          setState(() => _currentPosition = LatLng(p.latitude, p.longitude));
+        }
+      });
+    } catch (_) {}
   }
 
   @override
   void dispose() {
     _timer?.cancel();
+    _positionStream?.cancel();
     super.dispose();
   }
 
@@ -58,23 +90,58 @@ class _ArrivedMapScreenState extends State<ArrivedMapScreen> {
             flex: 3,
             child: Stack(
               children: [
-                // Map background
-                Container(
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF1F3F4),
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        const Color(0xFFF1F3F4),
-                        AppColors.primaryDark.withValues(alpha: 0.05),
+                // Real map background with live location
+                FlutterMap(
+                  options: MapOptions(
+                    initialCenter: _currentPosition ?? const LatLng(18.5204, 73.8567),
+                    initialZoom: 15.0,
+                  ),
+                  children: [
+                    TileLayer(
+                      urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      userAgentPackageName: 'com.voltshare.app',
+                    ),
+                    MarkerLayer(
+                      markers: [
+                        if (_currentPosition != null)
+                          Marker(
+                            point: _currentPosition!,
+                            width: 24,
+                            height: 24,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.blue,
+                                border: Border.all(color: Colors.white, width: 2),
+                                boxShadow: [
+                                  BoxShadow(color: Colors.blue.withValues(alpha: 0.5), blurRadius: 8),
+                                ],
+                              ),
+                            ),
+                          ),
+                        // Charger destination marker
+                        Marker(
+                          point: const LatLng(18.5204, 73.8567), // Will use charger coords when available
+                          width: 32,
+                          height: 32,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColors.primaryDark,
+                              border: Border.all(color: Colors.white, width: 2),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.2),
+                                  blurRadius: 8,
+                                ),
+                              ],
+                            ),
+                            child: const Icon(Icons.ev_station, color: Colors.white, size: 16),
+                          ),
+                        ),
                       ],
                     ),
-                  ),
-                  child: CustomPaint(
-                    size: Size.infinite,
-                    painter: _MapMeshPainter(),
-                  ),
+                  ],
                 ),
                 // Navigation header
                 Positioned(
@@ -120,39 +187,6 @@ class _ArrivedMapScreenState extends State<ArrivedMapScreen> {
                       ],
                     ),
                   ).animate().fadeIn().slideY(begin: -0.3),
-                ),
-                // Current location pin
-                Center(
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Container(
-                        width: 40, height: 40,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.primaryDark.withValues(alpha: 0.2),
-                        ),
-                      ).animate(onPlay: (c) => c.repeat()).custom(
-                        duration: 2.seconds,
-                        builder: (_, v, child) => Transform.scale(
-                          scale: 1.0 + v * 0.5,
-                          child: Opacity(opacity: 1.0 - v * 0.8, child: child),
-                        ),
-                      ),
-                      Container(
-                        width: 24, height: 24,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.primaryDark,
-                          border: Border.all(color: Colors.white, width: 2),
-                          boxShadow: [BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.2),
-                            blurRadius: 8,
-                          )],
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
               ],
             ),
@@ -376,26 +410,4 @@ class _ArrivedMapScreenState extends State<ArrivedMapScreen> {
       ),
     );
   }
-}
-
-class _MapMeshPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = const Color(0xFF6BFF8F).withValues(alpha: 0.05)
-      ..style = PaintingStyle.fill;
-    for (double x = 0; x < size.width; x += 20) {
-      for (double y = 0; y < size.height; y += 20) {
-        canvas.drawCircle(Offset(x, y), 0.5, paint);
-      }
-    }
-    for (double x = 10; x < size.width; x += 20) {
-      for (double y = 10; y < size.height; y += 20) {
-        canvas.drawCircle(Offset(x, y), 0.5, paint);
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

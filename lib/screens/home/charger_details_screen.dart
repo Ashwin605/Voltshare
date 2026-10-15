@@ -3,6 +3,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:vnest_app/core/models/charger_model.dart';
 import 'package:vnest_app/core/services/charger_service.dart';
 import 'package:vnest_app/core/enums/app_enums.dart';
@@ -522,20 +524,56 @@ class _ChargerDetailsScreenState extends State<ChargerDetailsScreen> {
       ),
       child: Column(
         children: [
-          // Map placeholder
-          Container(
-            height: 120,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-              gradient: LinearGradient(
-                colors: [
-                  AppColors.primary.withValues(alpha: 0.1),
-                  cs.surfaceContainer,
-                ],
-              ),
-            ),
-            child: Center(
-              child: Icon(Icons.map, size: 48, color: AppColors.primary.withValues(alpha: 0.3)),
+          // Interactive map showing charger location
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+            child: SizedBox(
+              height: 150,
+              child: _charger != null
+                  ? FlutterMap(
+                      options: MapOptions(
+                        initialCenter: LatLng(_charger!.latitude, _charger!.longitude),
+                        initialZoom: 15.0,
+                        interactionOptions: const InteractionOptions(
+                          flags: InteractiveFlag.none,
+                        ),
+                      ),
+                      children: [
+                        TileLayer(
+                          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                          userAgentPackageName: 'com.voltshare.app',
+                        ),
+                        MarkerLayer(
+                          markers: [
+                            Marker(
+                              point: LatLng(_charger!.latitude, _charger!.longitude),
+                              width: 32,
+                              height: 32,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: AppColors.primary,
+                                  border: Border.all(color: Colors.white, width: 2),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: AppColors.primary.withValues(alpha: 0.5),
+                                      blurRadius: 10,
+                                    ),
+                                  ],
+                                ),
+                                child: const Icon(Icons.ev_station, color: Colors.white, size: 16),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )
+                  : Container(
+                      color: cs.surfaceContainer,
+                      child: Center(
+                        child: Icon(Icons.map, size: 48, color: AppColors.primary.withValues(alpha: 0.3)),
+                      ),
+                    ),
             ),
           ),
           Padding(

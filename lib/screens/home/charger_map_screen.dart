@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
@@ -29,12 +30,22 @@ class _ChargerMapScreenState extends State<ChargerMapScreen>
   ChargerModel? _selectedCharger;
   bool _isLoading = true;
   bool _isListView = false;
+  final MapController _mapController = MapController();
+  StreamSubscription<Position>? _positionStream;
 
   @override
   void initState() {
     super.initState();
     _determinePosition();
     _fetchChargers();
+  }
+
+  @override
+  void dispose() {
+    _positionStream?.cancel();
+    _mapController.dispose();
+    _searchController.dispose();
+    super.dispose();
   }
 
   Future<void> _fetchChargers() async {
@@ -86,12 +97,31 @@ class _ChargerMapScreenState extends State<ChargerMapScreen>
     } 
 
     try {
-      final position = await Geolocator.getCurrentPosition();
+      // Get initial position
+      final position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
+      );
       setState(() {
         _currentPosition = LatLng(position.latitude, position.longitude);
       });
+
+      // Start live location stream for real-time updates
+      _positionStream = Geolocator.getPositionStream(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          distanceFilter: 10, // Update every 10 meters
+        ),
+      ).listen((Position pos) {
+        if (mounted) {
+          setState(() {
+            _currentPosition = LatLng(pos.latitude, pos.longitude);
+          });
+        }
+      });
     } catch (e) {
-      // Do nothing
+      debugPrint('Location error: $e');
     }
   }
 
@@ -167,24 +197,37 @@ class _ChargerMapScreenState extends State<ChargerMapScreen>
 
   Widget _buildFlutterMap() {
     final center = _currentPosition ?? const LatLng(18.5204, 73.8567);
-    final isDark = context.isDark;
-    final mapStyle = isDark ? 'dark_all' : 'light_all';
 
     return FlutterMap(
+      mapController: _mapController,
       options: MapOptions(
         initialCenter: center,
         initialZoom: 14.0,
       ),
       children: [
         TileLayer(
-          urlTemplate: 'https://{s}.basemaps.cartocdn.com/$mapStyle/{z}/{x}/{y}.png',
-          subdomains: const ['a', 'b', 'c', 'd'],
+          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          userAgentPackageName: 'com.voltshare.app',
         ),
+        // Dark overlay for dark theme
+        if (context.isDark)
+          ColorFiltered(
+            colorFilter: const ColorFilter.matrix([
+              -1, 0, 0, 0, 255,
+              0, -1, 0, 0, 255,
+              0, 0, -1, 0, 255,
+              0, 0, 0, 1, 0,
+            ]),
+            child: TileLayer(
+              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+              userAgentPackageName: 'com.voltshare.app',
+            ),
+          ),
         MarkerLayer(
           markers: [
             if (_currentPosition != null)
               Marker(
-                point: center,
+                point: _currentPosition!,
                 width: 24,
                 height: 24,
                 child: _buildPulsingPin(false, isCurrentLocation: true),
@@ -384,8 +427,15 @@ class _ChargerMapScreenState extends State<ChargerMapScreen>
                   shape: BoxShape.circle,
                   color: cs.onSurface.withValues(alpha: 0.1),
                 ),
-                child: const Icon(Icons.my_location,
-                    color: AppColors.primary, size: 16),
+                child: GestureDetector(
+                  onTap: () {
+                    if (_currentPosition != null) {
+                      _mapController.move(_currentPosition!, 15.0);
+                    }
+                  },
+                  child: const Icon(Icons.my_location,
+                      color: AppColors.primary, size: 16),
+                ),
               ),
             ],
           ),
